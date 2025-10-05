@@ -136,6 +136,8 @@ LOCATION_NAME_TO_ID = {
     "Boss Room X" : 10024,
     "Boss Room Y" : 10025,
     "Boss Room Z" : 10026,
+    "Boss Room AA" : 10027,
+    "Boss Room AB" : 10028,
 }
 
 

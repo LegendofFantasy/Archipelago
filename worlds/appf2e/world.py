@@ -4,10 +4,10 @@ import settings
 
 from worlds.AutoWorld import World
 
-from . import items, locations, options, regions, rules, web_world
+from . import items, locations, options, regions, rules, web_world, data
 
 
-class APTestSettings(settings.Group):
+class APPF2eSettings(settings.Group):
     class ConnectionsDirectory(settings.UserFolderPath):
         """Path to the connections folder which is found in the game folder at your game's install location."""
         description = "AP Pathfinder 2e connections Directory"
@@ -40,6 +40,24 @@ class APPF2eWorld(World):
 
     origin_region_name = "Menu"
 
+    keys_used = []
+
+    def generate_early(self) -> None:
+
+        # Fix any options that are going to cause issues by being too high or low
+        if self.options.number_of_keys.value >= self.options.number_of_rooms.value:
+            self.options.number_of_keys.value = self.options.number_of_rooms.value - 1
+
+        if self.options.maximum_level.value < self.options.minimum_level.value:
+            self.options.maximum_level.value = self.options.minimum_level.value
+
+        if self.options.maximum_difficulty.value < self.options.minimum_difficulty.value:
+            self.options.maximum_difficulty.value = self.options.minimum_difficulty.value
+
+        # Select the keys to be used for this generation
+        self.keys_used = self.random.sample(data.KEY_NAMES, self.options.number_of_keys)
+
+
     def create_regions(self) -> None:
         regions.create_and_connect_regions(self)
         locations.create_all_locations(self)
@@ -48,7 +66,7 @@ class APPF2eWorld(World):
         rules.set_all_rules(self)
 
     def create_items(self) -> None:
-        items.create_all_items(self)
+        items.create_all_items(self, self.keys_used)
 
     def create_item(self, name: str) -> items.APPF2eItem:
         return items.create_item_with_correct_classification(self, name)

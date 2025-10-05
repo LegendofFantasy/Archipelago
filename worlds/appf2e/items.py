@@ -122,128 +122,192 @@ class APPF2eItem(Item):
     game = "AP Pathfinder 2e"
 
 
-# Ontop of our regular itempool, our world must be able to create arbitrary amounts of filler as requested by core.
-# To do this, it must define a function called world.get_filler_item_name(), which we will define in world.py later.
-# For now, let's make a function that returns the name of a random filler item here in items.py.
 def get_random_filler_item_name(world: APPF2eWorld) -> str:
-    # APQuest has an option called "trap_chance".
-    # This is the percentage chance that each filler item is a Math Trap instead of a Confetti Cannon.
-    # For this purpose, we need to use a random generator.
 
-    # IMPORTANT: Whenever you need to use a random generator, you must use world.random.
-    # This ensures that generating with the same generator seed twice yields the same output.
-    # DO NOT use a bare random object from Python's built-in random module.
-    if world.random.randint(0, 99) < world.options.trap_chance:
-        return "Math Trap"
-    return "Confetti Cannon"
+    filler_list = [
+        "Rest Token",
+        "Weapon Token",
+        "Armor Token",
+        "Shield Token",
+        "Wand Token",
+        "Staff Token",
+        "Magic Item Token",
+        "Consumable Token",
+        "Healing Potion Token",
+        "Elixir of Life Token"
+    ]
+
+    if world.options.include_ancestry_feat_tokens:
+        filler_list += ["Ancestry Feat Token"]
+    if world.options.include_general_feat_tokens:
+        filler_list += ["General Feat Token"]
+    if world.options.include_skill_training_tokens:
+        filler_list += ["Skill Training Token"]
+    if world.options.include_hero_points:
+        filler_list += ["Hero Point"]
+    if world.options.maximum_level >= 2:
+        filler_list += ["Property Rune Token", "Material Token"]
+    if world.options.maximum_level >= 17 and not world.options.use_abp:
+        filler_list += ["Apex Item Token"]
+
+    return world.random.choice(filler_list)
 
 
 def create_item_with_correct_classification(world: APPF2eWorld, name: str) -> APPF2eItem:
-    # Our world class must have a create_item() function that can create any of our items by name at any time.
-    # So, we make this helper function that creates the item by name with the correct classification.
-    # Note: This function's content could just be the contents of world.create_item in world.py directly,
-    # but it seemed nicer to have it in its own function over here in items.py.
-    classification = DEFAULT_ITEM_CLASSIFICATIONS[name]
 
-    # It is perfectly normal and valid for an item's classification to differ based on the player's options.
-    # In our case, Health Upgrades are only relevant to logic (and thus labeled as "progression") in hard mode.
-    if name == "Health Upgrade" and world.options.hard_mode:
-        classification = ItemClassification.progression
-
-    return APPF2eItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
+    return APPF2eItem(name, DEFAULT_ITEM_CLASSIFICATIONS[name], ITEM_NAME_TO_ID[name], world.player)
 
 
-# With those two helper functions defined, let's now get to actually creating and submitting our itempool.
-def create_all_items(world: APPF2eWorld) -> None:
-    # This is the function in which we will create all the items that this world submits to the multiworld item pool.
-    # There must be exactly as many items as there are locations.
-    # In our case, there are either six or seven locations.
-    # We must make sure that when there are six locations, there are six items,
-    # and when there are seven locations, there are seven items.
+def create_all_items(world: APPF2eWorld, keys_used: list[str]) -> None:
 
-    # Creating items should generally be done via the world's create_item method.
-    # First, we create a list containing all the items that always exist.
+    itempool: list[Item] = []
 
-    itempool: list[Item] = [
-        world.create_item("Key"),
-        world.create_item("Sword"),
-        world.create_item("Shield"),
-        world.create_item("Health Upgrade"),
-        world.create_item("Health Upgrade"),
-    ]
+    # Add all the required items
+    if world.options.maximum_level.value > world.options.starting_level.value:
+        for _ in range(world.options.maximum_level.value - world.options.starting_level.value):
+            itempool.append(world.create_item("Level Up"))
 
-    # Some items may only exist if the player enables certain options.
-    # In our case, If the hammer option is enabled, the sixth item is the Hammer.
-    # Otherwise, we add a filler Confetti Cannon.
-    if world.options.hammer:
-        # Once again, it is important to stress that even though the Hammer doesn't always exist,
-        # it must be present in the worlds item_name_to_id.
-        # Whether it is actually in the itempool is determined purely by whether we create and add the item here.
-        itempool.append(world.create_item("Hammer"))
+    if not world.options.use_abp:
+        if world.options.maximum_level >= 2 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Weapon Rune"))
+        if world.options.maximum_level >= 4 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Weapon Rune"))
+        if world.options.maximum_level >= 5 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Armor Rune"))
+        if world.options.maximum_level >= 8 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Armor Rune"))
+        if world.options.maximum_level >= 10 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Weapon Rune"))
+        if world.options.maximum_level >= 11 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Armor Rune"))
+        if world.options.maximum_level >= 12 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Weapon Rune"))
+        if world.options.maximum_level >= 14 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Armor Rune"))
+        if world.options.maximum_level >= 16 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Weapon Rune"))
+        if world.options.maximum_level >= 17 > world.options.starting_level:
+            itempool.append(world.create_item("Apex Items Token"))
+        if world.options.maximum_level >= 18 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Armor Rune"))
+        if world.options.maximum_level >= 19 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Weapon Rune"))
+        if world.options.maximum_level >= 20 > world.options.starting_level:
+            itempool.append(world.create_item("Progressive Armor Rune"))
 
-    # Archipelago requires that each world submits as many locations as it submits items.
-    # This is where we can use our filler and trap items.
-    # APQuest has two of these: The Confetti Cannon and the Math Trap.
-    # (Unfortunately, Archipelago is a bit ambiguous about its terminology here:
-    #  "filler" is an ItemClassification separate from "trap", but in a lot of its functions,
-    #  Archipelago will use "filler" to just mean "an additional item created to fill out the itempool".
-    #  "Filler" in this sense can technically have any ItemClassification,
-    #  but most commonly ItemClassification.filler or ItemClassification.trap.
-    #  Starting here, the word "filler" will be used to collectively refer to APQuest's Confetti Cannon and Math Trap,
-    #  which are ItemClassification.filler and ItemClassification.trap respectively.)
-    # Creating filler items works the same as any other item. But there is a question:
-    # How many filler items do we actually need to create?
-    # In regions.py, we created either six or seven locations depending on the "extra_starting_chest" option.
-    # In this function, we have created five or six items depending on whether the "hammer" option is enabled.
-    # We *could* have a really complicated if-else tree checking the options again, but there is a better way.
-    # We can compare the size of our itempool so far to the number of locations in our world.
+    for key in keys_used:
+        itempool.append(world.create_item(key))
 
-    # The length of our itempool is easy to determine, since we have it as a list.
-    number_of_items = len(itempool)
+    # In the worst case scenario the above are all the items we can add, so we need to start checking for space.
+    locations_left = len(world.multiworld.get_unfilled_locations(world.player)) - len(itempool)
 
-    # The number of locations is also easy to determine, but we have to be careful.
-    # Just calling len(world.get_locations()) would report an incorrect number, because of our *event locations*.
-    # What we actually want is the number of *unfilled* locations. Luckily, there is a helper method for this:
-    number_of_unfilled_locations = len(world.multiworld.get_unfilled_locations(world.player))
+    # Add the useful exploration activities if there's room
+    if locations_left >= 7 and world.options.include_exploration_activities:
+        itempool.extend([
+            world.create_item("Avoid Notice Unlock"),
+            world.create_item("Defend Unlock"),
+            world.create_item("Detect Magic Unlock"),
+            world.create_item("Repeat a Spell Unlock"),
+            world.create_item("Scout Unlock"),
+            world.create_item("Search Unlock"),
+            world.create_item("Sustain an Effect Unlock")
+        ])
+        locations_left -= 7
 
-    # Now, we just subtract the number of items from the number of locations to get the number of empty item slots.
-    needed_number_of_filler_items = number_of_unfilled_locations - number_of_items
+    # Add the rest of the exploration activities if there's room
+    if locations_left >= 4 and world.options.include_exploration_activities:
+        itempool.extend([
+            world.create_item("Cover Tracks Unlock"),
+            world.create_item("Hustle Unlock"),
+            world.create_item("Investigate Unlock"),
+            world.create_item("Track Unlock")
+        ])
+        locations_left -= 4
 
-    # Finally, we create that many filler items and add them to the itempool.
-    # To create our filler, we could just use world.create_item("Confetti Cannon").
-    # But there is an alternative that works even better for most worlds, including APQuest.
-    # As discussed above, our world must have a get_filler_item_name() function defined,
-    # which must return the name of an infinitely repeatable filler item.
-    # Defining this function enables the use of a helper function called world.create_filler().
-    # You can just use this function directly to create as many filler items as you need to complete your itempool.
-    itempool += [world.create_filler() for _ in range(needed_number_of_filler_items)]
+    # Add in Progressive Shield Runes if there's room for them and they are appropriate for the level range
+    if locations_left >= 1 and world.options.maximum_level >= 4:
+        itempool.append(world.create_item("Progressive Shield Rune"))
+        locations_left -= 1
+    if locations_left >= 1 and world.options.maximum_level >= 7:
+        itempool.append(world.create_item("Progressive Shield Rune"))
+        locations_left -= 1
+    if locations_left >= 1 and world.options.maximum_level >= 10:
+        itempool.append(world.create_item("Progressive Shield Rune"))
+        locations_left -= 1
+    if locations_left >= 1 and world.options.maximum_level >= 13:
+        itempool.append(world.create_item("Progressive Shield Rune"))
+        locations_left -= 1
+    if locations_left >= 1 and world.options.maximum_level >= 16:
+        itempool.append(world.create_item("Progressive Shield Rune"))
+        locations_left -= 1
+    if locations_left >= 1 and world.options.maximum_level >= 19:
+        itempool.append(world.create_item("Progressive Shield Rune"))
+        locations_left -= 1
 
-    # But... is that the right option for your game? Let's explore that.
-    # For some games, the concepts of "regular itempool filler" and "additionally created filler" are different.
-    # These games might want / require specific amounts of specific filler items in their regular pool.
-    # To achieve this, they will have to intentionally create the correct quantities using world.create_item().
-    # They may still use world.create_filler() to fill up the rest of their itempool with "repeatable filler",
-    # after creating their "specific quantity" filler and still having room left over.
+    # Add in some Rest Tokens if there's room since they're very useful, especially with low level ranges
+    guaranteed_rest_tokens = (world.options.number_of_rooms //
+                              max(3, world.options.maximum_level.value - world.options.starting_level.value))
+    if locations_left >= guaranteed_rest_tokens:
+        for _ in range(0, guaranteed_rest_tokens):
+            itempool.append(world.create_item("Rest Token"))
+        locations_left -= guaranteed_rest_tokens
 
-    # But there are many other games which *only* have infinitely repeatable filler items.
-    # They don't care about specific amounts of specific filler items, instead only caring about the proportions.
-    # In this case, world.create_filler() can just be used for the entire filler itempool.
-    # APQuest is one of these games:
-    # Regardless of whether it's filler for the regular itempool or additional filler for item links / etc.,
-    # we always just want a Confetti Cannon or a Math Trap depending on the "trap_chance" option.
-    # We defined this behavior in our get_random_filler_item_name() function, which in world.py,
-    # we'll bind to world.get_filler_item_name(). So, we can just use world.create_filler() for all of our filler.
+    # Fill the rest of the itempool with filler
+    itempool += [world.create_filler() for _ in range(locations_left)]
 
-    # Anyway. With our world's itempool finalized, we now need to submit it to the multiworld itempool.
-    # This is how the generator actually knows about the existence of our items.
+    # Add the itempool to the multiworld
     world.multiworld.itempool += itempool
 
-    # Sometimes, you might want the player to start with certain items already in their inventory.
-    # These items are called "precollected items".
-    # They will be sent as soon as they connect for the first time (depending on your client's item handling flag).
-    # Players can add precollected items themselves via the generic "start_inventory" option.
-    # If you want to add your own precollected items, you can do so via world.push_precollected().
-    if world.options.start_with_one_confetti_cannon:
-        # We're adding a filler item, but you can also add progression items to the player's precollected inventory.
-        starting_confetti_cannon = world.create_item("Confetti Cannon")
-        world.push_precollected(starting_confetti_cannon)
+    # Send the appropriate precollected items based on starting level
+    if world.options.starting_level >= 2:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Weapon Rune"))
+    if world.options.starting_level >= 3:
+        world.push_precollected(world.create_item("Level Up"))
+    if world.options.starting_level >= 4:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Weapon Rune"))
+    if world.options.starting_level >= 5:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Armor Rune"))
+    if world.options.starting_level >= 6:
+        world.push_precollected(world.create_item("Level Up"))
+    if world.options.starting_level >= 7:
+        world.push_precollected(world.create_item("Level Up"))
+    if world.options.starting_level >= 8:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Armor Rune"))
+    if world.options.starting_level >= 9:
+        world.push_precollected(world.create_item("Level Up"))
+    if world.options.starting_level >= 10:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Weapon Rune"))
+    if world.options.starting_level >= 11:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Armor Rune"))
+    if world.options.starting_level >= 12:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Weapon Rune"))
+    if world.options.starting_level >= 13:
+        world.push_precollected(world.create_item("Level Up"))
+    if world.options.starting_level >= 14:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Armor Rune"))
+    if world.options.starting_level >= 15:
+        world.push_precollected(world.create_item("Level Up"))
+    if world.options.starting_level >= 16:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Weapon Rune"))
+    if world.options.starting_level >= 17:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Apex Items Token"))
+    if world.options.starting_level >= 18:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Armor Rune"))
+    if world.options.starting_level >= 19:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Weapon Rune"))
+    if world.options.starting_level >= 20:
+        world.push_precollected(world.create_item("Level Up"))
+        if not world.options.use_abp: world.push_precollected(world.create_item("Progressive Armor Rune"))
+

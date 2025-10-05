@@ -2,8 +2,7 @@ from dataclasses import dataclass
 
 from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle, DefaultOnToggle, OptionSet
 
-import data
-from .data import TRAITS, COMMON_ANCESTRIES, UNCOMMON_ANCESTRIES, RARE_ANCESTRIES, BACKGROUNDS
+from . import data
 
 
 class StrictLogic(DefaultOnToggle):

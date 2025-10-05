@@ -779,6 +779,28 @@ CLASSES = {
 
 CREATURES = import_data("creatures.json")
 
+KEY_NAMES = {
+    "Red Key",
+    "Blue Key",
+    "Green Key",
+    "Yellow Key",
+    "Cyan Key",
+    "Magenta Key",
+    "White Key",
+    "Black Key",
+    "Gray Key",
+    "Orange Key",
+    "Azure Key",
+    "Chartreuse Key",
+    "Teal Key",
+    "Violet Key",
+    "Pink Key",
+    "Amber Key",
+    "Indigo Key",
+    "Purple Key",
+    "Crimson Key"
+}
+
 SHIELDS = import_data("shields.json")
 
 VERSATILE_HERITAGES = [
