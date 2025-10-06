@@ -245,7 +245,7 @@ def create_all_items(world: APPF2eWorld, keys_used: list[str]) -> None:
         locations_left -= 1
 
     # Add in some Rest Tokens if there's room since they're very useful, especially with low level ranges
-    guaranteed_rest_tokens = (world.options.number_of_rooms //
+    guaranteed_rest_tokens = (world.options.number_of_rooms.value //
                               max(3, world.options.maximum_level.value - world.options.starting_level.value))
     if locations_left >= guaranteed_rest_tokens:
         for _ in range(0, guaranteed_rest_tokens):

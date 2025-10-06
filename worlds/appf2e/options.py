@@ -161,7 +161,8 @@ class RandomizeSubclass(Toggle):
 
 class AncestryBlacklist(OptionSet):
     """
-    This prevents any Ancestries listed here from being randomly selected.
+    This prevents any Ancestries listed here from being randomly selected. Blocking everything is rendered the same as
+    blocking nothing.
 
     Use "_Common", "_Uncommon", or "_Rare" as a shortcut for all Ancestries of that rarity.
     """
@@ -174,7 +175,8 @@ class AncestryBlacklist(OptionSet):
 
 class BackgroundBlacklist(OptionSet):
     """
-    This prevents any Backgrounds listed here from being randomly selected.
+    This prevents any Backgrounds listed here from being randomly selected. Blocking everything is rendered the same as
+    blocking nothing.
 
     Use "_Common", "_Uncommon", or "_Rare" as a shortcut for all Backgrounds of that rarity.
     """
@@ -187,7 +189,8 @@ class BackgroundBlacklist(OptionSet):
 
 class ClassBlacklist(OptionSet):
     """
-    This prevents any Classes listed here from being randomly selected.
+    This prevents any Classes listed here from being randomly selected. Blocking everything is rendered the same as
+    blocking nothing.
     """
 
     display_name = "Class Blacklist"
