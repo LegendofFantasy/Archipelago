@@ -1,6 +1,7 @@
 from collections.abc import Mapping
 from typing import Any
 import settings
+import json
 
 from worlds.AutoWorld import World
 
@@ -12,7 +13,7 @@ class APPF2eSettings(settings.Group):
         """Path to the connections folder which is found in the game folder at your game's install location."""
         description = "AP Pathfinder 2e connections Directory"
 
-    connections_directory: ConnectionsDirectory = ConnectionsDirectory("")
+    connections_directory: ConnectionsDirectory = ConnectionsDirectory("%localappdata%/APPF2e/connections")
 
 
 # The world class is the heart and soul of an apworld implementation.
@@ -49,21 +50,22 @@ class APPF2eWorld(World):
         "Armors" : "",
         "Shields" : ""
     }
+    rooms = dict()
 
     def generate_early(self) -> None:
 
         # Fix any options that are going to cause issues by being too high or low
         if self.options.number_of_keys.value >= self.options.number_of_rooms.value:
-            self.options.number_of_keys.value = self.options.number_of_rooms.value - 1
+            self.options.number_of_keys.value = int(self.options.number_of_rooms.value - 1)
 
         if self.options.maximum_level.value < self.options.minimum_level.value:
-            self.options.maximum_level.value = self.options.minimum_level.value
+            self.options.maximum_level.value = int(self.options.minimum_level.value)
 
         if self.options.maximum_difficulty.value < self.options.minimum_difficulty.value:
-            self.options.maximum_difficulty.value = self.options.minimum_difficulty.value
+            self.options.maximum_difficulty.value = int(self.options.minimum_difficulty.value)
 
         # Select the keys to be used for this generation
-        self.keys_used = self.random.sample(data.KEY_NAMES, self.options.number_of_keys)
+        self.keys_used = self.random.sample(data.KEY_NAMES, int(self.options.number_of_keys.value))
 
         # Select random Ancestries
         ancestries = []
@@ -153,12 +155,222 @@ class APPF2eWorld(World):
 
         # Select starting equipment
         self.starting["Weapons"] = ", ".join(self.random.sample(
-            [data.WEAPONS[weapon]["name"] for weapon in data.WEAPONS], 4 + self.options.extra_weapons.value))
+            [data.WEAPONS[weapon]["name"] for weapon in data.WEAPONS], 4 + int(self.options.extra_weapons.value)))
         self.starting["Armors"] = ", ".join(self.random.sample(
-            [data.ARMORS[armor]["name"] for armor in data.ARMORS], 4 + self.options.extra_armors.value))
+            [data.ARMORS[armor]["name"] for armor in data.ARMORS], 4 + int(self.options.extra_armors.value)))
         self.starting["Shields"] = ", ".join(self.random.sample(
-            [data.SHIELDS[shield]["name"] for shield in data.SHIELDS], self.options.starting_shields.value))
+            [data.SHIELDS[shield]["name"] for shield in data.SHIELDS], int(self.options.starting_shields.value)))
 
+        # Make a list of valid enemy creatures
+        valid_creatures = []
+
+        for creature in data.CREATURES:
+
+            # Discard any creatures that are from APs if the setting to do so is on
+            if self.options.block_ap_creatures and data.CREATURES[creature]["source"].startswith("Pathfinder #"):
+                continue
+
+            # Discard any creatures that don't have correct traits
+            failed = False
+
+            for trait in self.options.creature_blacklist.value:
+                if trait in data.CREATURES[creature]["trait"]:
+                    failed = True
+                    break
+
+            for trait in self.options.valid_creatures.value:
+                if trait not in data.CREATURES[creature]["trait"]:
+                    failed = True
+                    break
+
+            if failed:
+                continue
+
+            # Discard any creatures that aren't relevant to the level range
+            level = int(data.CREATURES[creature]["level"])
+
+            if level + 4 < self.options.starting_level.value or level - 5 > self.options.maximum_level.value:
+                continue
+
+            valid_creatures.append(creature)
+
+        # If everything is blocked or if there are too few creatures, add everything instead
+        if not valid_creatures or len(valid_creatures) <= 5:
+
+            # Reinforce the allowed creatures if there are any
+            if valid_creatures:
+                while len(valid_creatures) < 40:
+                    valid_creatures.extend(valid_creatures)
+
+            valid_creatures.extend(data.CREATURES.keys())
+
+        # Randomize the initial order of the creatures to not favour alphabetical order.
+        self.random.shuffle(valid_creatures)
+
+        # Make a list of valid difficulties
+        difficulties = []
+
+        if self.options.minimum_difficulty == 0:
+            difficulties.append("Trivial")
+        if self.options.minimum_difficulty <= 1 <= self.options.maximum_difficulty:
+            difficulties.append("Low")
+        if self.options.minimum_difficulty <= 2 <= self.options.maximum_difficulty:
+            difficulties.append("Moderate")
+        if self.options.minimum_difficulty <= 3 <= self.options.maximum_difficulty:
+            difficulties.append("Severe")
+        if self.options.maximum_difficulty == 4:
+            difficulties.append("Extreme")
+
+        # Make the rooms
+        increment_factor = (int(self.options.number_of_rooms.value) /
+                            (int(self.options.maximum_level.value) - int(self.options.starting_level.value) + 1))
+        keys = self.keys_used.copy()
+
+        for room_number in range(1, int(self.options.number_of_rooms.value)):
+            room_name = f"Room {room_number}"
+            level = int(self.options.starting_level.value) + int((room_number - 1) / increment_factor)
+            difficulty = self.random.choice(difficulties)
+            budget = data.DIFFICULTIES[difficulty]
+            current = 0
+            creatures = []
+
+            # Choose the creatures to appear in the room; we compare to budget - 5 because a level-3 creature
+            # is worth 15 experience points, so we can otherwise end up stuck forever looking for 5 more experience
+            while current <= budget - 5:
+                for creature in valid_creatures:
+                    creature_level = int(data.CREATURES[creature]["level"])
+
+                    # Discard if the creature is out of the level range
+                    if not level - 4 <= creature_level <= level + 4:
+                        continue
+
+                    xp = data.XP_VALUES[creature_level - level]
+
+                    if current + xp <= budget:
+                        creatures.append(data.CREATURES[creature]["name"])
+                        current += xp
+
+                    # Stop looping if we're done
+                    if current <= budget - 5:
+                        break
+
+                # Shuffle the list of valid creatures for the next loop or the next room
+                self.random.shuffle(valid_creatures)
+
+            # Connect the room to one of the previous rooms and potentially add a key; Room 1 is accessible from the
+            # start and doesn't need any connections back
+            if not room_number == 1:
+                source_room = self.random.choice(self.rooms.keys())
+                self.rooms[source_room]["Doors"].append(room_name)
+
+                # If all remaining rooms must have keys, then add a key. Otherwise, add a key 1/3 of the time
+                if int(self.options.number_of_rooms.value) - room_number >= len(keys):
+                    self.rooms[source_room]["Keys"].append(keys.pop())
+                elif self.random.randint(0, 2) < 2:
+                    self.rooms[source_room]["Keys"].append(keys.pop())
+                else:
+                    self.rooms[source_room]["Keys"].append("")
+
+            self.rooms[room_name] = {
+                "Level" : level,
+                "Difficulty" : difficulty,
+                "Creatures" : creatures,
+                "Doors" : [],
+                "Keys" : []
+            }
+
+        # The Boss Room works slightly differently so we do it separately
+        level = int(self.options.maximum_level.value)
+        difficulty = "Moderate"
+        budget = data.DIFFICULTIES[difficulty]
+
+        if self.options.boss_encounter == 0:
+            difficulty = "Trivial"
+            budget = data.DIFFICULTIES[difficulty]
+        elif self.options.boss_encounter == 1:
+            difficulty = "Low"
+            budget = data.DIFFICULTIES[difficulty]
+        elif self.options.boss_encounter == 2:
+            difficulty = "Moderate"
+            budget = data.DIFFICULTIES[difficulty]
+        elif self.options.boss_encounter == 3:
+            difficulty = "Severe"
+            budget = data.DIFFICULTIES[difficulty]
+        elif self.options.boss_encounter == 4:
+            difficulty = "Extreme"
+            budget = data.DIFFICULTIES[difficulty]
+        elif self.options.boss_encounter == 5:
+            difficulty = "Extreme"
+            budget = -4
+        elif self.options.boss_encounter == 6:
+            difficulty = "Extreme+"
+            budget = -5
+
+        current = 0
+        creatures = []
+
+        # Choose the creatures to appear in the room; we compare to budget - 5 because a level-3 creature
+        # is worth 15 experience points, so we can otherwise end up stuck forever looking for 5 more experience
+        while current <= budget - 5:
+            for creature in valid_creatures:
+                creature_level = int(data.CREATURES[creature]["level"])
+
+                # Discard if the creature is out of the level range
+                if not level - 4 <= creature_level <= level + 4:
+                    continue
+
+                xp = data.XP_VALUES[creature_level - level]
+
+                if current + xp <= budget:
+                    creatures.append(data.CREATURES[creature]["name"])
+                    current += xp
+
+                # Stop looping if we're done
+                if current <= budget - 5:
+                    break
+
+            # Shuffle the list of valid creatures for the next loop or the next room
+            self.random.shuffle(valid_creatures)
+
+        # Set creatures to the first creature four levels higher we find
+        if budget == -4:
+            for creature in valid_creatures:
+                creature_level = int(data.CREATURES[creature]["level"])
+
+                if not creature_level == level + 4:
+                    continue
+
+                creatures.append(data.CREATURES[creature]["name"])
+                break
+
+        # Set creatures to the first creature five levels higher we find
+        if budget == -5:
+            for creature in valid_creatures:
+                creature_level = int(data.CREATURES[creature]["level"])
+
+                if not creature_level == level + 5:
+                    continue
+
+                creatures.append(data.CREATURES[creature]["name"])
+                break
+
+        # Connect the room to one of the previous rooms and potentially add a key
+        source_room = self.random.choice(self.rooms.keys())
+        self.rooms[source_room]["Doors"].append("Boss Room")
+
+        # If there is a key left to use, use it here
+        if keys:
+            self.rooms[source_room]["Keys"].append(keys.pop())
+        else:
+            self.rooms[source_room]["Keys"].append("")
+
+        self.rooms["Boss Room"] = {
+            "Level": level,
+            "Difficulty": difficulty,
+            "Creatures": creatures,
+            "Doors": [],
+            "Keys": []
+        }
 
     def create_regions(self) -> None:
         regions.create_and_connect_regions(self)
@@ -168,7 +380,7 @@ class APPF2eWorld(World):
         rules.set_all_rules(self)
 
     def create_items(self) -> None:
-        items.create_all_items(self, self.keys_used)
+        items.create_all_items(self)
 
     def create_item(self, name: str) -> items.APPF2eItem:
         return items.create_item_with_correct_classification(self, name)
@@ -188,5 +400,8 @@ class APPF2eWorld(World):
         slot_data["Weapons"] = self.starting["Weapons"]
         slot_data["Shields"] = self.starting["Shields"]
         slot_data["Armors"] = self.starting["Armors"]
+
+        for room in self.rooms:
+            slot_data[room] = json.dumps(self.rooms[room])
 
         return slot_data

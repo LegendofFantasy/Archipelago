@@ -833,3 +833,22 @@ for creature in CREATURES:
         if trait not in TRAITS:
             TRAITS.add(trait)
 
+DIFFICULTIES = {
+    "Trivial" : 40,
+    "Low" : 60,
+    "Moderate" : 80,
+    "Severe" : 120,
+    "Extreme" : 160
+}
+
+XP_VALUES = {
+    -4 : 10,
+    -3 : 15,
+    -2 : 20,
+    -1 : 30,
+    0 : 40,
+    1 : 60,
+    2 : 80,
+    3 : 120,
+    4 : 160
+}

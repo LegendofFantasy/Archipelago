@@ -158,7 +158,7 @@ def create_item_with_correct_classification(world: APPF2eWorld, name: str) -> AP
     return APPF2eItem(name, DEFAULT_ITEM_CLASSIFICATIONS[name], ITEM_NAME_TO_ID[name], world.player)
 
 
-def create_all_items(world: APPF2eWorld, keys_used: list[str]) -> None:
+def create_all_items(world: APPF2eWorld) -> None:
 
     itempool: list[Item] = []
 
@@ -195,7 +195,7 @@ def create_all_items(world: APPF2eWorld, keys_used: list[str]) -> None:
         if world.options.maximum_level >= 20 > world.options.starting_level:
             itempool.append(world.create_item("Progressive Armor Rune"))
 
-    for key in keys_used:
+    for key in world.keys_used:
         itempool.append(world.create_item(key))
 
     # In the worst case scenario the above are all the items we can add, so we need to start checking for space.
