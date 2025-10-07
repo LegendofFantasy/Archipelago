@@ -263,10 +263,11 @@ class APPF2eWorld(World):
                 source_room = self.random.choice(self.rooms.keys())
                 self.rooms[source_room]["Doors"].append(room_name)
 
-                # If all remaining rooms must have keys, then add a key. Otherwise, add a key 1/3 of the time
-                if int(self.options.number_of_rooms.value) - room_number >= len(keys):
+                # If all remaining rooms must have keys, then add a key. Otherwise, randomly determine if a key
+                # should be added
+                if int(self.options.number_of_rooms.value) - room_number + 1 == len(keys):
                     self.rooms[source_room]["Keys"].append(keys.pop())
-                elif self.random.randint(0, 2) < 2:
+                elif self.random.randint(0, int(self.options.number_of_rooms.value) - room_number + 1) < len(keys):
                     self.rooms[source_room]["Keys"].append(keys.pop())
                 else:
                     self.rooms[source_room]["Keys"].append("")
