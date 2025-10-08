@@ -1,13 +1,15 @@
 import json
+import pkgutil
 
 def import_data(file_name="") -> dict:
     """Import json data from file_name in the data folder"""
 
-    with open(f"data/{file_name}") as json_file:
-        data = json.loads(json_file.readline())
-        json_file.close()
+    # with open(f"data/{file_name}") as json_file:
+        # data = json.loads(json_file.readline())
+        # json_file.close()
 
-    return data
+    # return data
+    return json.loads(pkgutil.get_data(__name__, f"data/{file_name}"))
 
 ANCESTRIES = {
     "Dwarf" : [
