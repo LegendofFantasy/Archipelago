@@ -50,14 +50,14 @@ class APPF2eWorld(World):
         if self.options.number_of_keys.value >= self.options.number_of_rooms.value:
             self.options.number_of_keys.value = int(self.options.number_of_rooms.value - 1)
 
-        if self.options.maximum_level.value < self.options.minimum_level.value:
-            self.options.maximum_level.value = int(self.options.minimum_level.value)
+        if self.options.maximum_level.value < self.options.starting_level.value:
+            self.options.maximum_level.value = int(self.options.starting_level.value)
 
         if self.options.maximum_difficulty.value < self.options.minimum_difficulty.value:
             self.options.maximum_difficulty.value = int(self.options.minimum_difficulty.value)
 
         # Select the keys to be used for this generation
-        self.keys_used = self.random.sample(data.KEY_NAMES, int(self.options.number_of_keys.value))
+        self.keys_used = self.random.sample(sorted(data.KEY_NAMES), int(self.options.number_of_keys.value))
 
         # Select random Ancestries
         ancestries = []
@@ -87,37 +87,40 @@ class APPF2eWorld(World):
             ancestries.clear()
 
             for name in names:
-                ancestries.append(self.random.sample(data.ANCESTRIES[name], 1))
+                new_ancestry = self.random.choice(data.ANCESTRIES[name])
+                if "VH" in new_ancestry:
+                    new_ancestry.replace("VH", self.random.choice(data.VERSATILE_HERITAGES))
+                ancestries.append(new_ancestry)
 
-        self.starting["Ancestries"] = f"{ancestries[0]}, {ancestries[1]}, {ancestries[2]}, and {ancestries[3]}"
+        self.starting["Ancestries"] = ", ".join(ancestries)
 
         # Select random Backgrounds
         backgrounds = []
 
         if self.options.background_blacklist.value:
             for background in data.BACKGROUNDS:
-                if data.BACKGROUNDS[background]["name"] in self.options.background_blacklist.value:
+                if background["name"] in self.options.background_blacklist.value:
                     continue
-                if (data.BACKGROUNDS[background]["rarity"] == "Common" and
+                if (background["rarity"] == "Common" and
                         "_Common" in self.options.background_blacklist.value):
                     continue
-                if (data.BACKGROUNDS[background]["rarity"] == "Uncommon" and
+                if (background["rarity"] == "Uncommon" and
                         "_Uncommon" in self.options.background_blacklist.value):
                     continue
-                if (data.BACKGROUNDS[background]["rarity"] == "Rare" and
+                if (background["rarity"] == "Rare" and
                         "_Rare" in self.options.background_blacklist.value):
                     continue
                 backgrounds.append(data.BACKGROUNDS[background]["name"])
 
         if not backgrounds:
-            backgrounds.extend(data.BACKGROUNDS[background]["name"] for background in data.BACKGROUNDS)
+            backgrounds.extend(background["name"] for background in data.BACKGROUNDS)
 
         if len(backgrounds) >= 4:
             backgrounds = self.random.sample(backgrounds, 4)
         else:
             backgrounds = self.random.choices(backgrounds, k=4)
 
-        self.starting["Backgrounds"] = f"{backgrounds[0]}, {backgrounds[1]}, {backgrounds[2]}, and {backgrounds[3]}"
+        self.starting["Backgrounds"] = ", ".join(backgrounds)
 
         # Select random Classes
         classes = []
@@ -141,17 +144,17 @@ class APPF2eWorld(World):
             classes.clear()
 
             for name in names:
-                classes.append(self.random.sample(data.CLASSES[name], 1))
+                classes.append(self.random.choice(data.CLASSES[name]))
 
-        self.starting["Classes"] = f"{classes[0]}, {classes[1]}, {classes[2]}, and {classes[3]}"
+        self.starting["Classes"] = ", ".join(classes)
 
         # Select starting equipment
         self.starting["Weapons"] = ", ".join(self.random.sample(
-            [data.WEAPONS[weapon]["name"] for weapon in data.WEAPONS], 4 + int(self.options.extra_weapons.value)))
+            [weapon["name"] for weapon in data.WEAPONS], 4 + int(self.options.extra_weapons.value)))
         self.starting["Armors"] = ", ".join(self.random.sample(
-            [data.ARMORS[armor]["name"] for armor in data.ARMORS], 4 + int(self.options.extra_armors.value)))
+            [armor["name"] for armor in data.ARMORS], 4 + int(self.options.extra_armors.value)))
         self.starting["Shields"] = ", ".join(self.random.sample(
-            [data.SHIELDS[shield]["name"] for shield in data.SHIELDS], int(self.options.starting_shields.value)))
+            [shield["name"] for shield in data.SHIELDS], int(self.options.starting_shields.value)))
 
         # Make a list of valid enemy creatures
         valid_creatures = []
@@ -159,19 +162,19 @@ class APPF2eWorld(World):
         for creature in data.CREATURES:
 
             # Discard any creatures that are from APs if the setting to do so is on
-            if self.options.block_ap_creatures and data.CREATURES[creature]["source"].startswith("Pathfinder #"):
+            if self.options.block_ap_creatures and creature["source"].startswith("Pathfinder #"):
                 continue
 
             # Discard any creatures that don't have correct traits
             failed = False
 
             for trait in self.options.creature_blacklist.value:
-                if trait in data.CREATURES[creature]["trait"]:
+                if trait in creature["trait"]:
                     failed = True
                     break
 
             for trait in self.options.valid_creatures.value:
-                if trait not in data.CREATURES[creature]["trait"]:
+                if trait not in creature["trait"]:
                     failed = True
                     break
 
@@ -179,7 +182,7 @@ class APPF2eWorld(World):
                 continue
 
             # Discard any creatures that aren't relevant to the level range
-            level = int(data.CREATURES[creature]["level"])
+            level = int(creature["level"])
 
             if level + 4 < self.options.starting_level.value or level - 5 > self.options.maximum_level.value:
                 continue
@@ -194,7 +197,7 @@ class APPF2eWorld(World):
                 while len(valid_creatures) < 40:
                     valid_creatures.extend(valid_creatures)
 
-            valid_creatures.extend(data.CREATURES.keys())
+            valid_creatures.extend(range(len(data.CREATURES)))
 
         # Randomize the initial order of the creatures to not favour alphabetical order.
         self.random.shuffle(valid_creatures)
@@ -225,12 +228,16 @@ class APPF2eWorld(World):
             budget = data.DIFFICULTIES[difficulty]
             current = 0
             creatures = []
+            offset = 5 if not level <= 2 else 10
+
 
             # Choose the creatures to appear in the room; we compare to budget - 5 because a level-3 creature
-            # is worth 15 experience points, so we can otherwise end up stuck forever looking for 5 more experience
-            while current <= budget - 5:
+            # is worth 15 experience points, so we can otherwise end up stuck forever looking for 5 more experience.
+            # The offset has to be 10 at levels 1 and 2 since there are no creatures that at level-4 either to give
+            # 10 experience
+            while current < budget - offset:
                 for creature in valid_creatures:
-                    creature_level = int(data.CREATURES[creature]["level"])
+                    creature_level = int(creature["level"])
 
                     # Discard if the creature is out of the level range
                     if not level - 4 <= creature_level <= level + 4:
@@ -239,11 +246,11 @@ class APPF2eWorld(World):
                     xp = data.XP_VALUES[creature_level - level]
 
                     if current + xp <= budget:
-                        creatures.append(data.CREATURES[creature]["name"])
+                        creatures.append(creature["name"])
                         current += xp
 
                     # Stop looping if we're done
-                    if current <= budget - 5:
+                    if current >= budget - offset:
                         break
 
                 # Shuffle the list of valid creatures for the next loop or the next room
@@ -252,7 +259,7 @@ class APPF2eWorld(World):
             # Connect the room to one of the previous rooms and potentially add a key; Room 1 is accessible from the
             # start and doesn't need any connections back
             if not room_number == 1:
-                source_room = self.random.choice(self.rooms.keys())
+                source_room = self.random.choice(list(self.rooms.keys()))
                 self.rooms[source_room]["Doors"].append(room_name)
 
                 # If all remaining rooms must have keys, then add a key. Otherwise, randomly determine if a key
@@ -301,12 +308,41 @@ class APPF2eWorld(World):
 
         current = 0
         creatures = []
+        offset = 5 if not level <= 2 else 10
+
+        # If we're looking for a specific level of solo boss, find one and save it to creatures
+        if budget == -4:
+            for creature in valid_creatures:
+                creature_level = int(creature["level"])
+
+                if not creature_level == level + 4:
+                    continue
+
+                creatures.append(creature["name"])
+                break
+
+        if budget == -5:
+            for creature in valid_creatures:
+                creature_level = int(creature["level"])
+
+                if not creature_level == level + 5:
+                    continue
+
+                creatures.append(creature["name"])
+                break
+
+        # If there were no possible solo bosses available, just give a regular Extreme encounter instead.
+        if (not creatures) and budget < 0:
+            difficulty = "Extreme"
+            budget = data.DIFFICULTIES[difficulty]
 
         # Choose the creatures to appear in the room; we compare to budget - 5 because a level-3 creature
-        # is worth 15 experience points, so we can otherwise end up stuck forever looking for 5 more experience
-        while current <= budget - 5:
+        # is worth 15 experience points, so we can otherwise end up stuck forever looking for 5 more experience.
+        # The offset has to be 10 at levels 1 and 2 since there are no creatures that at level-4 either to give
+        # 10 experience
+        while current < budget - offset:
             for creature in valid_creatures:
-                creature_level = int(data.CREATURES[creature]["level"])
+                creature_level = int(creature["level"])
 
                 # Discard if the creature is out of the level range
                 if not level - 4 <= creature_level <= level + 4:
@@ -315,40 +351,18 @@ class APPF2eWorld(World):
                 xp = data.XP_VALUES[creature_level - level]
 
                 if current + xp <= budget:
-                    creatures.append(data.CREATURES[creature]["name"])
+                    creatures.append(creature["name"])
                     current += xp
 
                 # Stop looping if we're done
-                if current <= budget - 5:
+                if current >= budget - offset:
                     break
 
             # Shuffle the list of valid creatures for the next loop or the next room
             self.random.shuffle(valid_creatures)
 
-        # Set creatures to the first creature four levels higher we find
-        if budget == -4:
-            for creature in valid_creatures:
-                creature_level = int(data.CREATURES[creature]["level"])
-
-                if not creature_level == level + 4:
-                    continue
-
-                creatures.append(data.CREATURES[creature]["name"])
-                break
-
-        # Set creatures to the first creature five levels higher we find
-        if budget == -5:
-            for creature in valid_creatures:
-                creature_level = int(data.CREATURES[creature]["level"])
-
-                if not creature_level == level + 5:
-                    continue
-
-                creatures.append(data.CREATURES[creature]["name"])
-                break
-
         # Connect the room to one of the previous rooms and potentially add a key
-        source_room = self.random.choice(self.rooms.keys())
+        source_room = self.random.choice(list(self.rooms.keys()))
         self.rooms[source_room]["Doors"].append("Boss Room")
 
         # If there is a key left to use, use it here

@@ -830,7 +830,7 @@ WEAPONS = import_data("weapons.json")
 TRAITS = set()
 
 for creature in CREATURES:
-    traits = CREATURES[creature]["trait"].split(", ")
+    traits = creature["trait"].split(", ")
     for trait in traits:
         if trait not in TRAITS:
             TRAITS.add(trait)

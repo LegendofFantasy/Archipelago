@@ -22,9 +22,9 @@ def connect_regions(world: APPF2eWorld) -> None:
     for room in world.rooms:
         doors = world.rooms[room]["Doors"]
         keys = world.rooms[room]["Keys"]
-        for i in len(doors):
+        for i in range(len(doors)):
             if keys[i]:
-                world.get_region(room).connect(doors[i], f"{room} to {doors[i]}",
-                                               lambda state, j=i: state.has(keys[j], world.player))
+                world.get_region(room).connect(world.get_region(doors[i]), f"{room} to {doors[i]}",
+                                               lambda state, j=i, k=keys: state.has(k[j], world.player))
             else:
-                world.get_region(room).connect(doors[i], f"{room} to {doors[i]}")
+                world.get_region(room).connect(world.get_region(doors[i]), f"{room} to {doors[i]}")

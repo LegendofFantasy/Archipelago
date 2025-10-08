@@ -184,7 +184,7 @@ class BackgroundBlacklist(OptionSet):
     display_name = "Background Blacklist"
 
     valid_keys = (["_Common", "_Uncommon", "_Rare"]
-                  + sorted(data.BACKGROUNDS[background]["name"] for background in data.BACKGROUNDS))
+                  + sorted(data.BACKGROUNDS[background]["name"] for background in range(len(data.BACKGROUNDS))))
 
 
 class ClassBlacklist(OptionSet):

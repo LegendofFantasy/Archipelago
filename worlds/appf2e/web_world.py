@@ -2,7 +2,7 @@ from BaseClasses import Tutorial
 
 from worlds.AutoWorld import WebWorld
 
-from .options import option_groups, option_presets
+from .options import option_groups
 
 
 class APPF2eWebWorld(WebWorld):
@@ -23,4 +23,4 @@ class APPF2eWebWorld(WebWorld):
 
     # If we have option groups and/or option presets, we need to specify these here as well.
     option_groups = option_groups
-    options_presets = option_presets
+    #options_presets = option_presets

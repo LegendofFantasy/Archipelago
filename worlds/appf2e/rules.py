@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from BaseClasses import CollectionState
-
-from ..generic.Rules import add_rule, set_rule
+from ..generic.Rules import set_rule
 
 if TYPE_CHECKING:
     from .world import APPF2eWorld
@@ -81,7 +79,7 @@ def set_all_rules(world: APPF2eWorld) -> None:
 
 def set_all_location_rules(world: APPF2eWorld) -> None:
 
-    level_requirements = {level : requirements_by_level(world, level) for level in range(2, 20)}
+    level_requirements = {level : requirements_by_level(world, level) for level in range(2, 21)}
 
     for room in world.rooms:
         level = world.rooms[room]["Level"]
