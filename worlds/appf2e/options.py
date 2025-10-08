@@ -49,7 +49,7 @@ class StartingLevel(Range):
 
     range_start = 1
     range_end = 20
-    default = 1
+    default = 2
 
 
 class MaximumLevel(Range):
@@ -63,7 +63,7 @@ class MaximumLevel(Range):
 
     range_start = 1
     range_end = 20
-    default = 1
+    default = 2
 
 
 class UseABP(Toggle):
