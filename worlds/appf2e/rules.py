@@ -79,14 +79,10 @@ def set_all_rules(world: APPF2eWorld) -> None:
 
 def set_all_location_rules(world: APPF2eWorld) -> None:
 
-    level_requirements = {level : requirements_by_level(world, level) for level in range(2, 21)}
+    level_requirements = {level : requirements_by_level(world, level) for level in range(1, 21)}
 
     for room in world.rooms:
         level = world.rooms[room]["Level"]
-
-        # Level 1 fights have no additional requirements, so we can skip
-        if level == 1:
-            continue
 
         if not room == "Boss Room":
             for letter in "ABCDE":

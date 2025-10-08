@@ -24,7 +24,7 @@ class NumberOfRooms(Range):
 
     range_start = 2
     range_end = 20
-    default = 5
+    default = 2
 
 
 class NumberOfKeys(Range):
