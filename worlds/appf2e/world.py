@@ -1,6 +1,5 @@
 from collections.abc import Mapping
 from typing import Any
-import settings
 import json
 
 from worlds.AutoWorld import World
@@ -8,21 +7,6 @@ from worlds.AutoWorld import World
 from . import items, locations, options, regions, rules, web_world, data
 
 
-class APPF2eSettings(settings.Group):
-    class ConnectionsDirectory(settings.UserFolderPath):
-        """Path to the connections folder which is found in the game folder at your game's install location."""
-        description = "AP Pathfinder 2e connections Directory"
-
-    connections_directory: ConnectionsDirectory = ConnectionsDirectory("%localappdata%/APPF2e/connections")
-
-
-# The world class is the heart and soul of an apworld implementation.
-# It holds all the data and functions required to build the world and submit it to the multiworld generator.
-# You could have all your world code in just this one class, but for readability and better structure,
-# it is common to split up world functionality into multiple files.
-# This implementation in particular has the following additional files, each covering one topic:
-# regions.py, locations.py, rules.py, items.py, options.py and web_world.py.
-# It is recommended that you read these in that specific order, then come back to the world class.
 class APPF2eWorld(World):
     """
     AP Pathfinder 2e is a game that randomly generates a dungeon for you to go through, fighting randomly generated
@@ -39,7 +23,7 @@ class APPF2eWorld(World):
     location_name_to_id = locations.LOCATION_NAME_TO_ID
     item_name_to_id = items.ITEM_NAME_TO_ID
 
-    origin_region_name = "Menu"
+    origin_region_name = "Room 1"
 
     keys_used = []
     starting = {
@@ -50,7 +34,15 @@ class APPF2eWorld(World):
         "Armors" : "",
         "Shields" : ""
     }
-    rooms = dict()
+    rooms = {
+        "Room 1" : {
+            "Level": 1,
+            "Difficulty": "",
+            "Creatures": [],
+            "Doors": [],
+            "Keys": []
+        }
+    }
 
     def generate_early(self) -> None:
 
@@ -365,12 +357,18 @@ class APPF2eWorld(World):
         else:
             self.rooms[source_room]["Keys"].append("")
 
+        # The Boss Room may need to have a lot of locations to account for the minimum number of items in the case of
+        # few rooms with a large level range and the maximum number of keys. Worst case requires 28 locations and every
+        # additional room past the minimum (Room 1 and the Boss Room) lowers the requirement by 4
+        locations_needed = max(5, 28 - (4 * (len(self.rooms) - 1)))
+
         self.rooms["Boss Room"] = {
             "Level": level,
             "Difficulty": difficulty,
             "Creatures": creatures,
             "Doors": [],
-            "Keys": []
+            "Keys": [],
+            "Locations Needed": "ABCDEFGHIJKLMNOPQRSTUVWXYZab"[:locations_needed]
         }
 
     def create_regions(self) -> None:

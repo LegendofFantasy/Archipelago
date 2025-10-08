@@ -1,5 +1,5 @@
-# Most of this code is sourced from the League of Legends APWorld found at: https://github.com/gaithernOrg/LoLAP and has
-# been edited to fit my needs.
+# Most of this code is sourced from the League of Legends APWorld found at: https://github.com/gaithernOrg/LoLAP and
+# has been edited to fit the needs of this project.
 
 from __future__ import annotations
 import os
@@ -19,7 +19,10 @@ from worlds.appf2e.world import APPF2eWorld
 check_num = 0
 
 ###Set up game communication path###
-game_communication_path = os.path.expandvars(APPF2eWorld.settings["connections_directory"])
+if "localappdata" in os.environ:
+    game_communication_path = os.path.expandvars(r"%localappdata%/APPF2e")
+else:
+    game_communication_path = os.path.expandvars(r"$HOME/APPF2e")
 if not os.path.exists(game_communication_path):
     os.makedirs(game_communication_path)
 
@@ -51,7 +54,10 @@ class APPF2eContext(CommonContext):
         self.syncing = False
         self.awaiting_bridge = False
         # self.game_communication_path: files go in this path to pass data between us and the actual game
-        self.game_communication_path = os.path.expandvars(APPF2eWorld.settings["connections_directory"])
+        if "localappdata" in os.environ:
+            self.game_communication_path = os.path.expandvars(r"%localappdata%/APPF2e")
+        else:
+            self.game_communication_path = os.path.expandvars(r"$HOME/APPF2e")
         if not os.path.exists(self.game_communication_path):
             os.makedirs(self.game_communication_path)
         for root, dirs, files in os.walk(self.game_communication_path):
@@ -150,7 +156,6 @@ class APPF2eContext(CommonContext):
 
 
 async def game_watcher(ctx: APPF2eContext):
-    # from worlds.appf2e.locations import lookup_id_to_name
     while not ctx.exit_event.is_set():
         if ctx.syncing == True:
             sync_msg = [{'cmd': 'Sync'}]
