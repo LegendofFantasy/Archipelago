@@ -75,6 +75,8 @@ def set_all_rules(world: APPF2eWorld) -> None:
 
     set_all_location_rules(world)
     set_completion_condition(world)
+    # from Utils import visualize_regions
+    # visualize_regions(world.multiworld.get_region("Room 1", world.player), "my_world.puml")
 
 
 def set_all_location_rules(world: APPF2eWorld) -> None:

@@ -24,7 +24,7 @@ class NumberOfRooms(Range):
 
     range_start = 2
     range_end = 20
-    default = 2
+    default = 5
 
 
 class NumberOfKeys(Range):
@@ -49,7 +49,7 @@ class StartingLevel(Range):
 
     range_start = 1
     range_end = 20
-    default = 2
+    default = 1
 
 
 class MaximumLevel(Range):
@@ -63,7 +63,7 @@ class MaximumLevel(Range):
 
     range_start = 1
     range_end = 20
-    default = 2
+    default = 1
 
 
 class UseABP(Toggle):
