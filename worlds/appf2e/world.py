@@ -404,7 +404,8 @@ class APPF2eWorld(World):
     def fill_slot_data(self) -> Mapping[str, Any]:
         slot_data =  self.options.as_dict(
             "strict_logic",
-            "use_abp"
+            "use_abp",
+            "include_exploration_activities"
         )
 
         slot_data["Ancestries"] = self.starting["Ancestries"]

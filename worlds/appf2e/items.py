@@ -60,6 +60,7 @@ ITEM_NAME_TO_ID = {
     "Indigo Key" : 117,
     "Purple Key" : 118,
     "Crimson Key" : 119,
+    "Vermilion Key" : 120
 }
 
 DEFAULT_ITEM_CLASSIFICATIONS = {
@@ -115,6 +116,7 @@ DEFAULT_ITEM_CLASSIFICATIONS = {
     "Indigo Key" : ItemClassification.progression,
     "Purple Key" : ItemClassification.progression,
     "Crimson Key" : ItemClassification.progression,
+    "Vermilion Key" : ItemClassification.progression,
 }
 
 

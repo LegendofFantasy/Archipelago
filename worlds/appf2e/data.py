@@ -800,7 +800,8 @@ KEY_NAMES = {
     "Amber Key",
     "Indigo Key",
     "Purple Key",
-    "Crimson Key"
+    "Crimson Key",
+    "Vermilion Key"
 }
 
 SHIELDS = import_data("shields.json")
