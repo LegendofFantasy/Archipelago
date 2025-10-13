@@ -206,7 +206,7 @@ class ExtraWeapons(Range):
     display_name = "Extra Starting Weapons"
 
     range_start = 0
-    range_end = 20
+    range_end = 10
     default = 0
 
 

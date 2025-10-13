@@ -110,7 +110,7 @@ class APPF2eWorld(World):
                 if (background["rarity"] == "Rare" and
                         "_Rare" in self.options.background_blacklist.value):
                     continue
-                backgrounds.append(data.BACKGROUNDS[background]["name"])
+                backgrounds.append(background["name"])
 
         if not backgrounds:
             backgrounds.extend(background["name"] for background in data.BACKGROUNDS)
@@ -197,7 +197,7 @@ class APPF2eWorld(World):
                 while len(valid_creatures) < 40:
                     valid_creatures.extend(valid_creatures)
 
-            valid_creatures.extend(range(len(data.CREATURES)))
+            valid_creatures.extend(data.CREATURES)
 
         # Randomize the initial order of the creatures to not favour alphabetical order.
         self.random.shuffle(valid_creatures)
