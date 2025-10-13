@@ -89,7 +89,7 @@ class APPF2eWorld(World):
             for name in names:
                 new_ancestry = self.random.choice(data.ANCESTRIES[name])
                 if "VH" in new_ancestry:
-                    new_ancestry.replace("VH", self.random.choice(data.VERSATILE_HERITAGES))
+                    new_ancestry = new_ancestry.replace("VH", self.random.choice(data.VERSATILE_HERITAGES))
                 ancestries.append(new_ancestry)
 
         self.starting["Ancestries"] = ", ".join(ancestries)
