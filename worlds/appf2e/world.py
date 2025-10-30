@@ -166,19 +166,20 @@ class APPF2eWorld(World):
                 continue
 
             # Discard any creatures that don't have correct traits
-            failed = False
+            blacklisted = False
+            valid = False
 
             for trait in self.options.creature_blacklist.value:
                 if trait in creature["trait"]:
-                    failed = True
+                    blacklisted = True
                     break
 
             for trait in self.options.valid_creatures.value:
-                if trait not in creature["trait"]:
-                    failed = True
+                if trait in creature["trait"]:
+                    valid = True
                     break
 
-            if failed:
+            if blacklisted or (not valid and self.options.valid_creatures.value):
                 continue
 
             # Discard any creatures that aren't relevant to the level range
