@@ -219,14 +219,14 @@ class APPF2eWorld(World):
                     if int(creature["level"]) == level - 1:
                         new_creature = creature.copy()
                         new_creature["level"] = int(creature["level"]) + 1
-                        new_creature["name"] = f"Elite {creature["name"]}"
+                        new_creature["name"] = f"Elite {creature['name']}"
                         added_levels[level] = True
                         break
 
                     if int(creature["level"]) == level + 1:
                         new_creature = creature.copy()
                         new_creature["level"] = int(creature["level"]) - 1
-                        new_creature["name"] = f"Weak {creature["name"]}"
+                        new_creature["name"] = f"Weak {creature['name']}"
                         new_creatures.append(new_creature)
                         added_levels[level] = True
                         break
