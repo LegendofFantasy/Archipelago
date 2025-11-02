@@ -48,7 +48,7 @@ class APPF2eWorld(World):
 
         # Fix any options that are going to cause issues by being too high or low
         if self.options.number_of_keys.value >= self.options.number_of_rooms.value:
-            self.options.number_of_keys.value = int(self.options.number_of_rooms.value - 1)
+            self.options.number_of_keys.value = int(self.options.number_of_rooms.value) - 1
 
         if self.options.maximum_level.value < self.options.starting_level.value:
             self.options.maximum_level.value = int(self.options.starting_level.value)
@@ -158,6 +158,9 @@ class APPF2eWorld(World):
 
         # Make a list of valid enemy creatures
         valid_creatures = []
+        # Keep track of what levels we have creatures of
+        added_levels = {level : False for level in range(max(self.options.starting_level.value - 4, -1),
+                                                         self.options.maximum_level.value + 5)}
 
         for creature in data.CREATURES:
 
@@ -185,23 +188,55 @@ class APPF2eWorld(World):
             # Discard any creatures that aren't relevant to the level range
             level = int(creature["level"])
 
-            if level + 4 < self.options.starting_level.value or level - 5 > self.options.maximum_level.value:
+            if level not in added_levels.keys():
                 continue
 
             valid_creatures.append(creature)
+            added_levels[level] = True
 
-        # If everything is blocked or if there are too few creatures, add everything instead
-        if not valid_creatures or len(valid_creatures) <= 5:
-
-            # Reinforce the allowed creatures if there are any
-            if valid_creatures:
-                while len(valid_creatures) < 40:
-                    valid_creatures.extend(valid_creatures)
-
+        # If everything is blocked, add everything instead
+        if not valid_creatures:
+            for level in added_levels:
+                added_levels[level] = True
             valid_creatures.extend(data.CREATURES)
 
         # Randomize the initial order of the creatures to not favour alphabetical order.
         self.random.shuffle(valid_creatures)
+
+        # If there are levels not represented in valid_creatures, add more using the Weak and Elite templates
+        complete = self.check_all_true(added_levels)
+
+        while not complete:
+
+            needed_levels = [level for level in added_levels if not added_levels[level]]
+            self.random.shuffle(needed_levels)
+            new_creatures = []
+
+            for level in needed_levels:
+                for creature in valid_creatures:
+
+                    # We prefer Elite over Weak here because Elite enemies tend to be weaker than Weak ones
+                    if int(creature["level"]) == level - 1:
+                        new_creature = creature.copy()
+                        new_creature["level"] = int(creature["level"]) + 1
+                        new_creature["name"] = f"Elite {creature["name"]}"
+                        added_levels[level] = True
+                        break
+
+                    if int(creature["level"]) == level + 1:
+                        new_creature = creature.copy()
+                        new_creature["level"] = int(creature["level"]) - 1
+                        new_creature["name"] = f"Weak {creature["name"]}"
+                        new_creatures.append(new_creature)
+                        added_levels[level] = True
+                        break
+
+                self.random.shuffle(valid_creatures)
+
+            for new_creature in new_creatures:
+                valid_creatures.append(new_creature)
+            self.random.shuffle(valid_creatures)
+            complete = self.check_all_true(added_levels)
 
         # Make a list of valid difficulties
         difficulties = []
@@ -234,7 +269,7 @@ class APPF2eWorld(World):
 
             # Choose the creatures to appear in the room; we compare to budget - 5 because a level-3 creature
             # is worth 15 experience points, so we can otherwise end up stuck forever looking for 5 more experience.
-            # The offset has to be 10 at levels 1 and 2 since there are no creatures that at level-4 either to give
+            # The offset has to be 10 at levels 1 and 2 since there are no creatures that are level-4 either to give
             # 10 experience
             while current < budget - offset:
                 for creature in valid_creatures:
@@ -420,3 +455,10 @@ class APPF2eWorld(World):
             slot_data[room] = json.dumps(self.rooms[room])
 
         return slot_data
+
+    def check_all_true(self, dictionary: Mapping[int, bool]) -> bool:
+        """Returns True if all items are true, False otherwise."""
+        for value in dictionary:
+            if not dictionary[value]:
+                return False
+        return True
