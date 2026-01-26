@@ -46,6 +46,13 @@ class APPF2eWorld(World):
 
     def generate_early(self) -> None:
 
+        # Universal Tracker Support
+        slot_data: dict[str, Any] = {}
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            # Get the passed through slot data from the real generation
+            slot_data = re_gen_passthrough[self.game]
+
         # Fix any options that are going to cause issues by being too high or low
         if self.options.number_of_keys.value >= self.options.number_of_rooms.value:
             self.options.number_of_keys.value = int(self.options.number_of_rooms.value) - 1
@@ -421,6 +428,15 @@ class APPF2eWorld(World):
             "Locations Needed": "ABCDEFGHIJKLMNOPQRSTUVWXYZab"[:locations_needed]
         }
 
+        # Universal Tracker support
+        if slot_data:
+            for i in range(1, 20):
+                if f"Room {i}" in slot_data:
+                    self.rooms[f"Room {i}"] = json.loads(slot_data[f"Room {i}"])
+
+            if "Boss Room" in slot_data:
+                self.rooms["Boss Room"] = json.loads(slot_data["Boss Room"])
+
     def create_regions(self) -> None:
         regions.create_and_connect_regions(self)
         locations.create_all_locations(self)
@@ -462,3 +478,8 @@ class APPF2eWorld(World):
             if not dictionary[value]:
                 return False
         return True
+
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:
+        # Trigger a regen in UT
+        return slot_data
