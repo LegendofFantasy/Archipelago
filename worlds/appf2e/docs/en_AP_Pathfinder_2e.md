@@ -5,7 +5,7 @@
 The [player options page for this game](../player-options) contains all the options you need to configure and export a
 config file.
 
-## What is AP Pathfinder 2e
+## What is AP Pathfinder 2e?
 
 The randomizer creates a dungeon with an arbitrary number of rooms, some of which are locked by one of an arbitrary 
 number of keys, each of which contains five locations blocked by winning a randomly generated 
