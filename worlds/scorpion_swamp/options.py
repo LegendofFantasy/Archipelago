@@ -1,152 +1,120 @@
 from dataclasses import dataclass
 
-from Options import Choice, OptionGroup, PerGameCommonOptions, Range, Toggle
-
-# In this file, we define the options the player can pick.
-# The most common types of options are Toggle, Range and Choice.
-
-# Options will be in the game's template yaml.
-# They will be represented by checkboxes, sliders etc. on the game's options page on the website.
-# (Note: Options can also be made invisible from either of these places by overriding Option.visibility.
-#  APQuest doesn't have an example of this, but this can be used for secret / hidden / advanced options.)
-
-# For further reading on options, you can also read the Options API Document:
-# https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/options%20api.md
+from Options import Choice, OptionGroup, PerGameCommonOptions, ItemDict, Toggle
 
 
-# The first type of Option we'll discuss is the Toggle.
-# A toggle is an option that can either be on or off. This will be represented by a checkbox on the website.
-# The default for a toggle is "off".
-# If you want a toggle to be on by default, you can use the "DefaultOnToggle" class instead of the "Toggle" class.
-class HardMode(Toggle):
+class Clearingsanity(Toggle):
     """
-    In hard mode, the basic enemy and the final boss will have more health.
-    The Health Upgrades become progression, as they are now required to beat the final boss.
+    Makes entering every clearing for the first time a location and adds items named "Clearing x" to
+    the item pool where x is the clearing's number. These new items will be needed to access their respective
+    clearing in the first place.
     """
 
-    # The docstring of an option is used as the description on the website and in the template yaml.
-
-    # You'll also want to set a display name, which will determine what the option is called on the website.
-    display_name = "Hard Mode"
+    display_name = "Clearingsanity"
 
 
-class Hammer(Toggle):
+class Spellsanity(Toggle):
     """
-    Adds another item to the itempool: The Hammer.
-    The top middle chest will now be locked behind a breakable wall, requiring the Hammer.
+    Adds all the places in the game where you can get Spell Gems as new locations and shuffles the
+    vanilla Spell Gems into the item pool.
     """
 
-    display_name = "Hammer"
+    display_name = "Spellsanity"
 
 
-class ExtraStartingChest(Toggle):
+class ExtraLocations(Toggle):
     """
-    Adds an extra chest in the bottom left, making room for an extra Confetti Cannon.
-    """
+    Adds additional locations for reaching all the bad endings in the game aside from running out of Stamina.
 
-    display_name = "Extra Starting Chest"
-
-
-class TrapChance(Range):
-    """
-    Percentage chance that any given Confetti Cannon will be replaced by a Math Trap.
+    If Progressive Statistics is on, this will be forced on as well.
     """
 
-    display_name = "Trap Chance"
-
-    range_start = 0
-    range_end = 100
-    default = 0
+    display_name = "Extra Locations"
 
 
-class StartWithOneConfettiCannon(Toggle):
+class ProgressiveStats(Toggle):
     """
-    Start with a confetti cannon already in your inventory.
-    Why? Because you deserve it. You get to celebrate yourself without doing any work first.
+    Adds additional items to the item pool that increase the minimum values of each of your stats at the beginning
+    of each run. For example, if you have three Progressive Skill items your Skill will be in the range of 10-12
+    instead of 7-12.
     """
 
-    display_name = "Start With One Confetti Cannon"
+    display_name = "Progressive Statistics"
 
 
-# A Range is a numeric option with a min and max value. This will be represented by a slider on the website.
-class ConfettiExplosiveness(Range):
+class Goal(Choice):
     """
-    How much confetti each use of a confetti cannon will fire.
-    """
+    The goal of the run.
 
-    display_name = "Confetti Explosiveness"
+    Selator/Poomchukker/Grimslade - Complete this quest in the game to win.
 
-    range_start = 0
-    range_end = 10
+    Any - Any of the quests can be completed to win.
 
-    # Range options must define an explicit default value.
-    default = 3
-
-
-# A Choice is an option with multiple discrete choices. This will be represented by a dropdown on the website.
-class PlayerSprite(Choice):
-    """
-    The sprite that the player will have.
+    All - All the quests must be separately completed to win.
     """
 
-    display_name = "Player Sprite"
+    display_name = "Goal"
 
-    option_human = 0
-    option_duck = 1
-    option_horse = 2
-    option_cat = 3
+    option_any = 0
+    option_selator = 1
+    option_poomchukker = 2
+    option_grimslade = 3
+    option_all = 4
 
-    # Choice options must define an explicit default value.
-    default = option_human
+    default = option_any
 
     # For choices, you can also define aliases.
     # For example, we could make it so "player_sprite: kitty" resolves to "player_sprite: cat" like this:
-    alias_kitty = option_cat
+    alias_good = option_selator
+    alias_neutral = option_poomchukker
+    alias_evil = option_grimslade
 
 
-# We must now define a dataclass inheriting from PerGameCommonOptions that we put all our options in.
-# This is in the format "option_name_in_snake_case: OptionClassName".
+class FillerWeights(ItemDict):
+    """
+    For any filler items that are added, these are the weights that each choice will be added. Any of the game's items
+    can be added to this list if desired. Leave it as the default if you don't know what you're doing.
+
+    If all weights are 0, the filler items will all be Stamina Spell Gems.
+    """
+
+    display_name = "Filler Weights"
+
+    default = {
+        "Skill Spell Gem" : 1,
+        "Stamina Spell Gem" : 1,
+        "Lucky Spell Gem" : 1
+    }
+
+
 @dataclass
 class ScorpionSwampOptions(PerGameCommonOptions):
-    hard_mode: HardMode
-    hammer: Hammer
-    extra_starting_chest: ExtraStartingChest
-    start_with_one_confetti_cannon: StartWithOneConfettiCannon
-    trap_chance: TrapChance
-    confetti_explosiveness: ConfettiExplosiveness
-    player_sprite: PlayerSprite
+    goal : Goal
+    clearingsanity : Clearingsanity
+    spellsanity : Spellsanity
+    extra_locations : ExtraLocations
+    progressive_stats : ProgressiveStats
+    filler_weights : FillerWeights
 
 
-# If we want to group our options by similar type, we can do so as well. This looks nice on the website.
 option_groups = [
     OptionGroup(
         "Gameplay Options",
-        [HardMode, Hammer, ExtraStartingChest, StartWithOneConfettiCannon, TrapChance],
+        [Goal, Clearingsanity, Spellsanity, ExtraLocations],
     ),
     OptionGroup(
-        "Aesthetic Options",
-        [ConfettiExplosiveness, PlayerSprite],
+        "Item Options",
+        [ProgressiveStats, FillerWeights],
     ),
 ]
 
-# Finally, we can define some option presets if we want the player to be able to quickly choose a specific "mode".
 option_presets = {
-    "boring": {
-        "hard_mode": False,
-        "hammer": False,
-        "extra_starting_chest": False,
-        "start_with_one_confetti_cannon": False,
-        "trap_chance": 0,
-        "confetti_explosiveness": ConfettiExplosiveness.range_start,
-        "player_sprite": PlayerSprite.option_human,
-    },
-    "the true way to play": {
-        "hard_mode": True,
-        "hammer": True,
-        "extra_starting_chest": True,
-        "start_with_one_confetti_cannon": True,
-        "trap_chance": 50,
-        "confetti_explosiveness": ConfettiExplosiveness.range_end,
-        "player_sprite": PlayerSprite.option_duck,
+    "maximum randomization": {
+        "goal": Goal.option_all,
+        "clearingsanity": True,
+        "spellsanity": True,
+        "extra_locations": True,
+        "progressive_stats": True,
+        "filler_weights": FillerWeights.default,
     },
 }

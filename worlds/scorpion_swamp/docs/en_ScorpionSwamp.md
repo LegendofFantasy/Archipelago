@@ -30,3 +30,7 @@ base level of your Skill, Stamina, and Luck when your character is created at th
 the case of Stamina). So, for example, with three Progressive Skills your Skill will range from 10-12 rather than the
 usual 7-12. Note that these items are never considered by logic; all battles are considered winnable and all checks
 passable with nothing. These items are just for convenience.
+
+Logic may expect for you to fail checks (usually Tests of Luck); there is an option built into the Ren'Py port that
+will make it so that you always fail ensuring that these are always accessible even if you have high stats. Logic,
+especially with -sanity settings on, will likely require you to restart the game at least once.
