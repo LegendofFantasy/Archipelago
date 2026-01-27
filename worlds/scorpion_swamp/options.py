@@ -63,8 +63,6 @@ class Goal(Choice):
 
     default = option_any
 
-    # For choices, you can also define aliases.
-    # For example, we could make it so "player_sprite: kitty" resolves to "player_sprite: cat" like this:
     alias_good = option_selator
     alias_neutral = option_poomchukker
     alias_evil = option_grimslade

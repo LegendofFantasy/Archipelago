@@ -7,15 +7,6 @@ from BaseClasses import Entrance, Region
 if TYPE_CHECKING:
     from .world import ScorpionSwampWorld
 
-# A region is a container for locations ("checks"), which connects to other regions via "Entrance" objects.
-# Many games will model their Regions after physical in-game places, but you can also have more abstract regions.
-# For a location to be in logic, its containing region must be reachable.
-# The Entrances connecting regions can have rules - more on that in rules.py.
-# This makes regions especially useful for traversal logic ("Can the player reach this part of the map?")
-
-# Every location must be inside a region, and you must have at least one region.
-# This is why we create regions first, and then later we create the locations (in locations.py).
-
 
 def create_and_connect_regions(world: ScorpionSwampWorld) -> None:
     create_all_regions(world)
@@ -23,57 +14,142 @@ def create_and_connect_regions(world: ScorpionSwampWorld) -> None:
 
 
 def create_all_regions(world: ScorpionSwampWorld) -> None:
-    # Creating a region is as simple as calling the constructor of the Region class.
-    overworld = Region("Overworld", world.player, world.multiworld)
-    top_left_room = Region("Top Left Room", world.player, world.multiworld)
-    bottom_right_room = Region("Bottom Right Room", world.player, world.multiworld)
-    right_room = Region("Right Room", world.player, world.multiworld)
-    final_boss_room = Region("Final Boss Room", world.player, world.multiworld)
 
-    # Let's put all these regions in a list.
-    regions = [overworld, top_left_room, bottom_right_room, right_room, final_boss_room]
+    regions = [
+        Region("Fenmarge", world.player, world.multiworld),
+        Region("Willowbend", world.player, world.multiworld),
+    ]
 
-    # Some regions may only exist if the player enables certain options.
-    # In our case, the Hammer locks the top middle chest in its own room if the hammer option is enabled.
-    if world.options.hammer:
-        top_middle_room = Region("Top Middle Room", world.player, world.multiworld)
-        regions.append(top_middle_room)
+    regions.extend([
+        Region(f"Clearing {i}", world.player, world.multiworld) for i in range(1, 36) if i not in {2, 22, 31}
+    ])
 
-    # We now need to add these regions to multiworld.regions so that AP knows about their existence.
     world.multiworld.regions += regions
 
 
 def connect_regions(world: ScorpionSwampWorld) -> None:
-    # We have regions now, but still need to connect them to each other.
-    # But wait, we no longer have access to the region variables we created in create_all_regions()!
-    # Luckily, once you've submitted your regions to multiworld.regions,
-    # you can get them at any time using world.get_region(...).
-    overworld = world.get_region("Overworld")
-    top_left_room = world.get_region("Top Left Room")
-    bottom_right_room = world.get_region("Bottom Right Room")
-    right_room = world.get_region("Right Room")
-    final_boss_room = world.get_region("Final Boss Room")
 
-    # Okay, now we can get connecting. For this, we need to create Entrances.
-    # Entrances are inherently one-way, but crucially, AP assumes you can always return to the origin region.
-    # One way to create an Entrance is by calling the Entrance constructor.
-    overworld_to_bottom_right_room = Entrance(world.player, "Overworld to Bottom Right Room", parent=overworld)
-    overworld.exits.append(overworld_to_bottom_right_room)
+    # Connect Fenmarge
+    world.get_region("Fenmarge").connect(world.get_region("Clearing 1"), "Fenmarge to Clearing 1")
 
-    # You can then connect the Entrance to the target region.
-    overworld_to_bottom_right_room.connect(bottom_right_room)
+    # Connect Willowbend
+    # You always need Clearing 10 to get to Willowbend so we don't need to check clearingsanity; we can always go back
+    world.get_region("Willowbend").connect(world.get_region("Clearing 10"), "Willowbend to Clearing 10")
 
-    # An even easier way is to use the region.connect helper.
-    overworld.connect(right_room, "Overworld to Right Room")
-    right_room.connect(final_boss_room, "Right Room to Final Boss Room")
+    # Connect Clearing 1
+    connect_clearings(world, 1, [12, 4])
 
-    # The region.connect helper even allows adding a rule immediately.
-    # We'll talk more about rule creation in the set_all_rules() function in rules.py.
-    overworld.connect(top_left_room, "Overworld to Top Left Room", lambda state: state.has("Key", world.player))
+    # Connect Clearing 3
+    connect_clearings(world, 3, [13, 21, 26])
 
-    # Some Entrances may only exist if the player enables certain options.
-    # In our case, the Hammer locks the top middle chest in its own room if the hammer option is enabled.
-    # In this case, we previously created an extra "Top Middle Room" region that we now need to connect to Overworld.
-    if world.options.hammer:
-        top_middle_room = world.get_region("Top Middle Room")
-        overworld.connect(top_middle_room, "Overworld to Top Middle Room")
+    # Connect Clearing 4
+    connect_clearings(world, 4, [34])
+    # Clearing 1 doesn't ever have an item requirement
+    world.get_region("Clearing 4").connect(world.get_region("Clearing 1"), "Clearing 4 to Clearing 1")
+
+    # Connect Clearing 5
+    connect_clearings(world, 5, [9, 29, 24])
+
+    # Connect Clearing 6
+    connect_clearings(world, 6, [18])
+
+    # Connect Clearing 7
+    connect_clearings(world, 7, [11, 30, 32, 15, 19])
+
+    # Connect Clearing 8
+    connect_clearings(world, 8, [26])
+
+    # Connect Clearing 9
+    connect_clearings(world, 9, [5, 13, 20])
+
+    # Connect Clearing 10
+    connect_clearings(world, 10, [28])
+    # Willowbend doesn't ever have an item requirement
+    world.get_region("Clearing 10").connect(world.get_region("Willowbend"), "Clearing 10 to Willowbend")
+
+    # Connect Clearing 11
+    connect_clearings(world, 11, [7])
+
+    # Connect Clearing 12
+    connect_clearings(world, 12, [17, 25])
+    # Clearing 1 doesn't ever have an item requirement
+    world.get_region("Clearing 12").connect(world.get_region("Clearing 1"), "Clearing 12 to Clearing 1")
+
+    # Connect Clearing 13
+    connect_clearings(world, 13, [9, 35, 3])
+
+    # Connect Clearing 14
+    connect_clearings(world, 14, [23])
+    # Clearing 14 connects to 16 only if the goal is Selator or Poomchukker
+    if world.options.goal.value in {1, 2}:
+        world.get_region("Clearing 14").connect(world.get_region("Clearing 16"), "Clearing 14 to Clearing 16",
+                               lambda state: state.has("Clearing 16", world.player))
+
+    # Connect Clearing 15
+    connect_clearings(world, 15, [19, 28, 7, 32])
+
+    # Connect Clearing 16
+    connect_clearings(world, 16, [35, 32, 30])
+
+    # Connect Clearing 17
+    connect_clearings(world, 17, [24, 12])
+
+    # Connect Clearing 18
+    connect_clearings(world, 18, [6, 29, 34])
+
+    # Connect Clearing 19
+    connect_clearings(world, 19, [27, 15, 32, 7])
+
+    # Connect Clearing 20
+    connect_clearings(world, 20, [33, 9])
+
+    # Connect Clearing 21
+    connect_clearings(world, 21, [3])
+
+    # Connect Clearing 23
+    connect_clearings(world, 23, [14, 29])
+
+    # Connect Clearing 24
+    connect_clearings(world, 24, [5, 26, 17])
+
+    # Connect Clearing 25
+    connect_clearings(world, 25, [12])
+
+    # Connect Clearing 26
+    connect_clearings(world, 26, [3, 8, 24])
+
+    # Connect Clearing 27
+    connect_clearings(world, 27, [19])
+
+    # Connect Clearing 28
+    connect_clearings(world, 28, [10, 15])
+
+    # Connect Clearing 29
+    connect_clearings(world, 29, [23, 33, 5, 18])
+
+    # Connect Clearing 30
+    connect_clearings(world, 30, [16, 7])
+
+    # Connect Clearing 32
+    connect_clearings(world, 32, [16, 15, 19, 7])
+
+    # Connect Clearing 33
+    connect_clearings(world, 33, [29, 20])
+
+    # Connect Clearing 34
+    connect_clearings(world, 34, [18, 4])
+
+    # Connect Clearing 35
+    connect_clearings(world, 35, [13, 16])
+
+def connect_clearings(world: ScorpionSwampWorld, source: int, targets: list[int]):
+    current_region = world.get_region(f"Clearing {source}")
+    if world.options.clearingsanity:
+        for target in targets:
+            current_region.connect(world.get_region(f"Clearing {target}"),
+                                   f"Clearing {source} to Clearing {target}",
+                                   lambda state, t=target: state.has(f"Clearing {t}", world.player))
+    else:
+        for target in targets:
+            current_region.connect(world.get_region(f"Clearing {target}"),
+                                   f"Clearing {source} to Clearing {target}")
