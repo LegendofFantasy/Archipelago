@@ -6,7 +6,7 @@ from worlds.AutoWorld import World
 
 # Imports of your world's files must be relative.
 from . import items, locations, regions, rules, web_world
-from . import options as apquest_options  # rename due to a name conflict with World.options
+from . import options as scorpion_swamp_options  # rename due to a name conflict with World.options
 
 # APQuest will go through all the parts of the world api one step at a time,
 # with many examples and comments across multiple files.
@@ -22,24 +22,24 @@ from . import options as apquest_options  # rename due to a name conflict with W
 # This implementation in particular has the following additional files, each covering one topic:
 # regions.py, locations.py, rules.py, items.py, options.py and web_world.py.
 # It is recommended that you read these in that specific order, then come back to the world class.
-class APQuestWorld(World):
+class ScorpionSwampWorld(World):
     """
-    APQuest is a minimal 8bit-era inspired adventure game with grid-like movement.
-    Good games don't need more than six checks.
+    Scorpion Swamp is a gamebook in the Fighting Fantasy series. Journey into the titular swamp to complete one of
+    three quests given by one of three wizards. Only YOU can brave the Scorpion Swamp!
     """
 
     # The docstring should contain a description of the game, to be displayed on the WebHost.
 
     # You must override the "game" field to say the name of the game.
-    game = "APQuest"
+    game = "Scorpion Swamp"
 
     # The WebWorld is a definition class that governs how this world will be displayed on the website.
-    web = web_world.APQuestWebWorld()
+    web = web_world.ScorpionSwampWebWorld()
 
     # This is how we associate the options defined in our options.py with our world.
     # (Note: options.py has been imported as "apquest_options" at the top of this file to avoid a name conflict)
-    options_dataclass = apquest_options.APQuestOptions
-    options: apquest_options.APQuestOptions  # Common mistake: This has to be a colon (:), not an equals sign (=).
+    options_dataclass = scorpion_swamp_options.APQuestOptions
+    options: scorpion_swamp_options.APQuestOptions  # Common mistake: This has to be a colon (:), not an equals sign (=).
 
     # Our world class must have a static location_name_to_id and item_name_to_id defined.
     # We define these in regions.py and items.py respectively, so we just set them here.
@@ -48,7 +48,7 @@ class APQuestWorld(World):
 
     # There is always one region that the generator starts from & assumes you can always go back to.
     # This defaults to "Menu", but you can change it by overriding origin_region_name.
-    origin_region_name = "Overworld"
+    origin_region_name = "Fenmarge"
 
     # Our world class must have certain functions ("steps") that get called during generation.
     # The main ones are: create_regions, set_rules, create_items.
@@ -65,7 +65,7 @@ class APQuestWorld(World):
 
     # Our world class must also have a create_item function that can create any one of our items by name at any time.
     # We also put this in a different file, the same one that create_items is in.
-    def create_item(self, name: str) -> items.APQuestItem:
+    def create_item(self, name: str) -> items.ScorpionSwampItem:
         return items.create_item_with_correct_classification(self, name)
 
     # For features such as item links and panic-method start inventory, AP may ask your world to create extra filler.

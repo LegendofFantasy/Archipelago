@@ -5,44 +5,148 @@ from typing import TYPE_CHECKING
 from BaseClasses import Item, ItemClassification
 
 if TYPE_CHECKING:
-    from .world import APQuestWorld
+    from .world import ScorpionSwampWorld
 
 # Every item must have a unique integer ID associated with it.
 # We will have a lookup from item name to ID here that, in world.py, we will import and bind to the world class.
 # Even if an item doesn't exist on specific options, it must be present in this lookup.
 ITEM_NAME_TO_ID = {
-    "Key": 1,
-    "Sword": 2,
-    "Shield": 3,
-    "Hammer": 4,
-    "Health Upgrade": 5,
-    "Confetti Cannon": 6,
-    "Math Trap": 7,
+    "Skill Spell Gem" : 1,
+    "Stamina Spell Gem" : 2,
+    "Luck Spell Gem" : 3,
+    "Fire Spell Gem" : 4,
+    "Ice Spell Gem" : 5,
+    "Illusion Spell Gem" : 6,
+    "Friendship Spell Gem" : 7,
+    "Growth Spell Gem" : 8,
+    "Bless Spell Gem" : 9,
+    "Fear Spell Gem" : 10,
+    "Withering Spell Gem" : 11,
+    "Curse Spell Gem" : 12,
+    "Golden Magnet" : 13,
+    "Violet Jewel" : 14,
+    "Secret Word" : 15,
+    "Gold Chain" : 16,
+    "Magic Sword" : 17,
+    "Horn of a Unicorn" : 18,
+    "Magic Potion" : 19,
+    "Ranger's Helmet" : 20,
+    "Sword Tree Seeds" : 21,
+    "Red Cloak" : 22,
+    "Great Magic Sword" : 23,
+    "Parrot Feathers" : 24,
+    "Dire Beast Claws" : 25,
+    "Progressive Skill" : 26,
+    "Progressive Stamina" : 27,
+    "Progressive Luck" : 28,
+    "Clearing 3" : 103,
+    "Clearing 4" : 104,
+    "Clearing 5" : 105,
+    "Clearing 6" : 106,
+    "Clearing 7" : 107,
+    "Clearing 8" : 108,
+    "Clearing 9" : 109,
+    "Clearing 10" : 110,
+    "Clearing 11" : 111,
+    "Clearing 12" : 112,
+    "Clearing 13" : 113,
+    "Clearing 14" : 114,
+    "Clearing 15" : 115,
+    "Clearing 16" : 116,
+    "Clearing 17" : 117,
+    "Clearing 18" : 118,
+    "Clearing 19" : 119,
+    "Clearing 20" : 120,
+    "Clearing 21" : 121,
+    "Clearing 23" : 123,
+    "Clearing 24" : 124,
+    "Clearing 25" : 125,
+    "Clearing 26" : 126,
+    "Clearing 27" : 127,
+    "Clearing 28" : 128,
+    "Clearing 29" : 129,
+    "Clearing 30" : 130,
+    "Clearing 32" : 132,
+    "Clearing 33" : 133,
+    "Clearing 34" : 134,
+    "Clearing 35" : 135,
 }
 
 # Items should have a defined default classification.
 # In our case, we will make a dictionary from item name to classification.
 DEFAULT_ITEM_CLASSIFICATIONS = {
-    "Key": ItemClassification.progression,
-    "Sword": ItemClassification.progression | ItemClassification.useful,  # Items can have multiple classifications.
-    "Shield": ItemClassification.progression,
-    "Hammer": ItemClassification.progression,
-    "Health Upgrade": ItemClassification.useful,
-    "Confetti Cannon": ItemClassification.filler,
-    "Math Trap": ItemClassification.trap,
+    "Skill Spell Gem" : ItemClassification.filler,
+    "Stamina Spell Gem" : ItemClassification.filler,
+    "Luck Spell Gem" : ItemClassification.filler,
+    "Fire Spell Gem" : ItemClassification.useful,
+    "Ice Spell Gem" : ItemClassification.useful,
+    "Illusion Spell Gem" : ItemClassification.useful,
+    "Friendship Spell Gem" : ItemClassification.useful,
+    "Growth Spell Gem" : ItemClassification.useful,
+    "Bless Spell Gem" : ItemClassification.useful,
+    "Fear Spell Gem" : ItemClassification.useful,
+    "Withering Spell Gem" : ItemClassification.useful,
+    "Curse Spell Gem" : ItemClassification.useful,
+    "Golden Magnet" : ItemClassification.trap | ItemClassification.useful,
+    "Violet Jewel" : ItemClassification.useful,
+    "Secret Word" : ItemClassification.useful,
+    "Gold Chain" : ItemClassification.useful,
+    "Magic Sword" : ItemClassification.useful,
+    "Horn of a Unicorn" : ItemClassification.useful,
+    "Magic Potion" : ItemClassification.useful,
+    "Ranger's Helmet" : ItemClassification.useful,
+    "Sword Tree Seeds" : ItemClassification.useful,
+    "Red Cloak" : ItemClassification.useful,
+    "Great Magic Sword" : ItemClassification.useful,
+    "Parrot Feathers" : ItemClassification.trap,
+    "Dire Beast Claws" : ItemClassification.filler,
+    "Progressive Skill" : ItemClassification.useful,
+    "Progressive Stamina" : ItemClassification.useful,
+    "Progressive Luck" : ItemClassification.useful,
+    "Clearing 3" : ItemClassification.progression,
+    "Clearing 4" : ItemClassification.progression,
+    "Clearing 5" : ItemClassification.progression,
+    "Clearing 6" : ItemClassification.progression,
+    "Clearing 7" : ItemClassification.progression,
+    "Clearing 8" : ItemClassification.progression,
+    "Clearing 9" : ItemClassification.progression,
+    "Clearing 10" : ItemClassification.progression,
+    "Clearing 11" : ItemClassification.progression,
+    "Clearing 12" : ItemClassification.progression,
+    "Clearing 13" : ItemClassification.progression,
+    "Clearing 14" : ItemClassification.progression,
+    "Clearing 15" : ItemClassification.progression,
+    "Clearing 16" : ItemClassification.progression,
+    "Clearing 17" : ItemClassification.progression,
+    "Clearing 18" : ItemClassification.progression,
+    "Clearing 19" : ItemClassification.progression,
+    "Clearing 20" : ItemClassification.progression,
+    "Clearing 21" : ItemClassification.progression,
+    "Clearing 23" : ItemClassification.progression,
+    "Clearing 24" : ItemClassification.progression,
+    "Clearing 25" : ItemClassification.progression,
+    "Clearing 26" : ItemClassification.progression,
+    "Clearing 27" : ItemClassification.progression,
+    "Clearing 28" : ItemClassification.progression,
+    "Clearing 29" : ItemClassification.progression,
+    "Clearing 30" : ItemClassification.progression,
+    "Clearing 32" : ItemClassification.progression,
+    "Clearing 33" : ItemClassification.progression,
+    "Clearing 34" : ItemClassification.progression,
+    "Clearing 35" : ItemClassification.progression,
 }
 
 
 # Each Item instance must correctly report the "game" it belongs to.
 # To make this simple, it is common practice to subclass the basic Item class and override the "game" field.
-class APQuestItem(Item):
-    game = "APQuest"
+class ScorpionSwampItem(Item):
+    game = "Scorpion Swamp"
 
 
 # Ontop of our regular itempool, our world must be able to create arbitrary amounts of filler as requested by core.
 # To do this, it must define a function called world.get_filler_item_name(), which we will define in world.py later.
 # For now, let's make a function that returns the name of a random filler item here in items.py.
-def get_random_filler_item_name(world: APQuestWorld) -> str:
+def get_random_filler_item_name(world: ScorpionSwampWorld) -> str:
     # APQuest has an option called "trap_chance".
     # This is the percentage chance that each filler item is a Math Trap instead of a Confetti Cannon.
     # For this purpose, we need to use a random generator.
@@ -55,7 +159,7 @@ def get_random_filler_item_name(world: APQuestWorld) -> str:
     return "Confetti Cannon"
 
 
-def create_item_with_correct_classification(world: APQuestWorld, name: str) -> APQuestItem:
+def create_item_with_correct_classification(world: ScorpionSwampWorld, name: str) -> ScorpionSwampItem:
     # Our world class must have a create_item() function that can create any of our items by name at any time.
     # So, we make this helper function that creates the item by name with the correct classification.
     # Note: This function's content could just be the contents of world.create_item in world.py directly,
@@ -67,11 +171,11 @@ def create_item_with_correct_classification(world: APQuestWorld, name: str) -> A
     if name == "Health Upgrade" and world.options.hard_mode:
         classification = ItemClassification.progression
 
-    return APQuestItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
+    return ScorpionSwampItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
 
 
 # With those two helper functions defined, let's now get to actually creating and submitting our itempool.
-def create_all_items(world: APQuestWorld) -> None:
+def create_all_items(world: ScorpionSwampWorld) -> None:
     # This is the function in which we will create all the items that this world submits to the multiworld item pool.
     # There must be exactly as many items as there are locations.
     # In our case, there are either six or seven locations.
