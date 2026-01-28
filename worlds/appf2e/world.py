@@ -25,24 +25,27 @@ class APPF2eWorld(World):
 
     origin_region_name = "Room 1"
 
-    keys_used = []
-    starting = {
-        "Ancestries" : "",
-        "Backgrounds" : "",
-        "Classes" : "",
-        "Weapons" : "",
-        "Armors" : "",
-        "Shields" : ""
-    }
-    rooms = {
-        "Room 1" : {
-            "Level": 1,
-            "Difficulty": "",
-            "Creatures": [],
-            "Doors": [],
-            "Keys": []
+    
+    def __init__(self, world: MultiWorld, player: int):
+        super().__init__(world, player)
+        self.keys_used = []
+        self.starting = {
+            "Ancestries" : "",
+            "Backgrounds" : "",
+            "Classes" : "",
+            "Weapons" : "",
+            "Armors" : "",
+            "Shields" : ""
         }
-    }
+        self.rooms = {
+            "Room 1" : {
+                "Level": 1,
+                "Difficulty": "",
+                "Creatures": [],
+                "Doors": [],
+                "Keys": []
+            }
+        }
 
     def generate_early(self) -> None:
 
