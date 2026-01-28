@@ -3,6 +3,7 @@ from typing import Any
 import json
 
 from worlds.AutoWorld import World
+from BaseClasses import MultiWorld
 
 from . import items, locations, options, regions, rules, web_world, data
 
