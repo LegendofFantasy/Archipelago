@@ -81,7 +81,7 @@ class FillerWeights(ItemDict):
     default = {
         "Skill Spell Gem" : 1,
         "Stamina Spell Gem" : 1,
-        "Lucky Spell Gem" : 1
+        "Luck Spell Gem" : 1
     }
 
 

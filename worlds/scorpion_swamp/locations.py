@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from BaseClasses import ItemClassification, Location
+from BaseClasses import Location
 
 from . import items
 
@@ -122,91 +122,117 @@ def create_all_locations(world: ScorpionSwampWorld) -> None:
 
 
 def create_regular_locations(world: ScorpionSwampWorld) -> None:
-    # Finally, we need to put the Locations ("checks") into their regions.
-    # Once again, before we do anything, we can grab our regions we created by using world.get_region()
-    overworld = world.get_region("Overworld")
-    top_left_room = world.get_region("Top Left Room")
-    bottom_right_room = world.get_region("Bottom Right Room")
-    right_room = world.get_region("Right Room")
 
-    # One way to create locations is by just creating them directly via their constructor.
-    bottom_left_chest = ScorpionSwampLocation(
-        world.player, "Bottom Left Chest", world.location_name_to_id["Bottom Left Chest"], overworld
-    )
+    # Start with the always included locations
+    add_locations_to_region(world, "Fenmarge", ["Slay Grimslade", "Gift from Grimslade"])
+    add_locations_to_region(world, "Clearing 4", ["Gift from the Master of Wolves"])
+    add_locations_to_region(world, "Clearing 5", ["Fallen Fighter"])
+    add_locations_to_region(world, "Clearing 6", ["Slay the Dire Beast"])
+    add_locations_to_region(world, "Clearing 9", ["Slay the Thief"])
+    add_locations_to_region(world, "Clearing 14", ["Slay the Parrot", "Gift from the Mistress of Birds"])
+    add_locations_to_region(world, "Clearing 16", ["Eagle's Nest"])
+    add_locations_to_region(world, "Clearing 18", ["Slay the Sword Trees"])
+    add_locations_to_region(world, "Clearing 19", ["Slay the Ranger"])
+    add_locations_to_region(world, "Clearing 25", ["Slay the Pool Beast"])
+    add_locations_to_region(world, "Clearing 29", ["Slay the Unicorn"])
 
-    # You can then add them to the region.
-    overworld.locations.append(bottom_left_chest)
+    # Add the locations for the extra_locations option
+    if world.options.extra_locations:
+        add_locations_to_region(world, "Fenmarge", [
+            "Game Over - A Hundred Pieces of Gold",
+            "Game Over - Failing Selator's Quest",
+            "Game Over - Itsy Bitsy Spider",
+            "Game Over - Failing Poomchukker's Quest",
+            "Game Over - Magic Carpet Ride",
+            "Game Over - Grimslade's Trap",
+            "Game Over - Out the Window and Into the Dungeons",
+            "Game Over - Slain by Poomchukker's Guards",
+            "Game Over - Explosion of Hellfire"
+        ])
+        add_locations_to_region(world, "Clearing 1", ["Game Over - A Feast for Rats"])
+        add_locations_to_region(world, "Clearing 14", ["Game Over - Curse of the Birds"])
+        add_locations_to_region(world, "Clearing 17", [
+            "Game Over - A Feast for the Spiders",
+            "Game Over - The Master of Spiders Has No Friends"
+        ])
+        add_locations_to_region(world, "Clearing 20", ["Game Over - Crocodile Smile"])
+        add_locations_to_region(world, "Clearing 33", ["Game Over - Dragged Down Into the River"])
 
-    # A simpler way to do this is by using the region.add_locations helper.
-    # For this, you need to have a dict of location names to their IDs (i.e. a subset of location_name_to_id)
-    # Aha! So that's why we made that "get_location_names_with_ids" helper method earlier.
-    # You also need to pass your overridden Location class.
-    bottom_right_room_locations = get_location_names_with_ids(
-        ["Bottom Right Room Left Chest", "Bottom Right Room Right Chest"]
-    )
-    bottom_right_room.add_locations(bottom_right_room_locations, ScorpionSwampLocation)
+    # Add the locations for the spellsanity option
+    if world.options.spellsanity:
+        add_locations_to_region(world, "Fenmarge", [
+            "Selator's Spell Gem 1",
+            "Selator's Spell Gem 2",
+            "Selator's Spell Gem 3",
+            "Selator's Spell Gem 4",
+            "Selator's Spell Gem 5",
+            "Selator's Spell Gem 6",
+            "Selator's Spell Gem 7",
+            "Selator's Spell Gem 8",
+            "Selator's Spell Gem 9",
+            "Poomchukker's Spell Gem 1",
+            "Poomchukker's Spell Gem 2",
+            "Poomchukker's Spell Gem 3",
+            "Poomchukker's Spell Gem 4",
+            "Poomchukker's Spell Gem 5",
+            "Poomchukker's Spell Gem 6",
+            "Grimslade's Spell Gem 1",
+            "Grimslade's Spell Gem 2",
+            "Grimslade's Spell Gem 3",
+            "Grimslade's Spell Gem 4",
+            "Grimslade's Spell Gem 5",
+            "Grimslade's Spell Gem 6",
+            "Grimslade's Spell Gem 7",
+            "Grimslade's Spell Gem 8",
+            "Grimslade's Spell Gem 9"
+        ])
+        add_locations_to_region(world, "Willowbend", [
+            "Halicar's Shop 1",
+            "Halicar's Shop 2",
+            "Halicar's Shop 3",
+            "Halicar's Shop 4",
+            "Halicar's Shop 5",
+            "Halicar's Shop 6"
+        ])
+        add_locations_to_region(world, "Clearing 27", [
+            "Gift from the Master of Gardens 1",
+            "Gift from the Master of Gardens 2",
+            "Gift from the Master of Gardens 3"
+        ])
+        add_locations_to_region(world, "Clearing 29", [
+            "Unicorn Clearing Spell Gem 1",
+            "Unicorn Clearing Spell Gem 2"
+        ])
 
-    top_left_room_locations = get_location_names_with_ids(["Top Left Room Chest"])
-    top_left_room.add_locations(top_left_room_locations, ScorpionSwampLocation)
+        # add the locations for the clearingsanity option
+        for i in range(1, 36):
+            if i not in {2, 22, 31}:
+                add_locations_to_region(world, f"Clearing {i}", [f"Clearing {i} Entered"])
 
-    right_room_locations = get_location_names_with_ids(["Right Room Enemy Drop"])
-    right_room.add_locations(right_room_locations, ScorpionSwampLocation)
 
-    # Locations may be in different regions depending on the player's options.
-    # In our case, the hammer option puts the Top Middle Chest into its own room called Top Middle Room.
-    top_middle_room_locations = get_location_names_with_ids(["Top Middle Chest"])
-    if world.options.hammer:
-        top_middle_room = world.get_region("Top Middle Room")
-        top_middle_room.add_locations(top_middle_room_locations, ScorpionSwampLocation)
-    else:
-        overworld.add_locations(top_middle_room_locations, ScorpionSwampLocation)
 
-    # Locations may exist only if the player enables certain options.
-    # In our case, the extra_starting_chest option adds the Bottom Left Extra Chest location.
-    if world.options.extra_starting_chest:
-        # Once again, it is important to stress that even though the Bottom Left Extra Chest location doesn't always
-        # exist, it must still always be present in the world's location_name_to_id.
-        # Whether the location actually exists in the seed is purely determined by whether we create and add it here.
-        bottom_left_extra_chest = get_location_names_with_ids(["Bottom Left Extra Chest"])
-        overworld.add_locations(bottom_left_extra_chest, ScorpionSwampLocation)
+def add_locations_to_region(world: ScorpionSwampWorld, region: str, locations: list[str]) -> None:
+    world.get_region(region).add_locations(get_location_names_with_ids(locations), ScorpionSwampLocation)
 
 
 def create_events(world: ScorpionSwampWorld) -> None:
-    # Sometimes, the player may perform in-game actions that allow them to progress which are not related to Items.
-    # In our case, the player must press a button in the top left room to open the final boss door.
-    # AP has something for this purpose: "Event locations" and "Event items".
-    # An event location is no different than a regular location, except it has the address "None".
-    # It is treated during generation like any other location, but then it is discarded.
-    # This location cannot be "sent" and its item cannot be "received", but the item can be used in logic rules.
-    # Since we are creating more locations and adding them to regions, we need to grab those regions again first.
-    top_left_room = world.get_region("Top Left Room")
-    final_boss_room = world.get_region("Final Boss Room")
 
-    # One way to create an event is simply to use one of the normal methods of creating a location.
-    button_in_top_left_room = ScorpionSwampLocation(world.player, "Top Left Room Button", None, top_left_room)
-    top_left_room.locations.append(button_in_top_left_room)
+    add_events_to_region(world, "Fenmarge", {
+        "Give Antherica to Selator" : "Selator Victory",
+        "Give Map to Poomchukker" : "Poomchukker Victory",
+        "Give Amulets to Grimslade" : "Grimslade Victory"
+    })
+    add_events_to_region(world, "Willowbend", {"Reach Willowbend" : "Map to Willowbend"})
+    add_events_to_region(world, "Clearing 4", {"Slay the Master of Wolves" : "Wolf Amulet"})
+    add_events_to_region(world, "Clearing 8", {"Rob the Master of Frogs" : "Frog Amulet"})
+    add_events_to_region(world, "Clearing 11", {"Antherica Bush" : "Antherica Berry"})
+    add_events_to_region(world, "Clearing 14", {"Negotiate with the Mistress of Birds" : "Bird Amulet"})
+    add_events_to_region(world, "Clearing 17", {"Slay the Master of Spiders" : "Spider Amulet"})
+    add_events_to_region(world, "Clearing 27", {"Slay the Master of Gardens" : "Flower Amulet"})
 
-    # We then need to put an event item onto the location.
-    # An event item is an item whose code is "None" (same as the event location's address),
-    # and whose classification is "progression". Item creation will be discussed more in items.py.
-    # Note: Usually, items are created in world.create_items(), which for us happens in items.py.
-    # However, when the location of an item is known ahead of time (as is the case with an event location/item pair),
-    # it is common practice to create the item when creating the location.
-    # Since locations also have to be finalized after world.create_regions(), which runs before world.create_items(),
-    # we'll create both the event location and the event item in our locations.py code.
-    button_item = items.ScorpionSwampItem("Top Left Room Button Pressed", ItemClassification.progression, None, world.player)
-    button_in_top_left_room.place_locked_item(button_item)
 
-    # A way simpler way to do create an event location/item pair is by using the region.create_event helper.
-    # Luckily, we have another event we want to create: The Victory event.
-    # We will use this event to track whether the player can win the game.
-    # The Victory event is a completely optional abstraction - This will be discussed more in set_rules().
-    final_boss_room.add_event(
-        "Final Boss Defeated", "Victory", location_type=ScorpionSwampLocation, item_type=items.ScorpionSwampItem
-    )
-
-    # If you create all your regions and locations line-by-line like this,
-    # the length of your create_regions might get out of hand.
-    # Many worlds use more data-driven approaches using dataclasses or NamedTuples.
-    # However, it is worth understanding how the actual creation of regions and locations works,
-    # That way, we're not just mindlessly copy-pasting! :)
+def add_events_to_region(world: ScorpionSwampWorld, region: str, events: dict[str,str]) -> None:
+    for event in events:
+        world.get_region(region).add_event(
+            event, events[event], location_type=ScorpionSwampLocation, item_type=items.ScorpionSwampItem
+        )
