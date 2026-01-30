@@ -6,20 +6,6 @@ from worlds.AutoWorld import World
 from . import items, locations, regions, rules, web_world
 from . import options as scorpion_swamp_options
 
-# APQuest will go through all the parts of the world api one step at a time,
-# with many examples and comments across multiple files.
-# If you'd rather read one continuous document, or just like reading multiple sources,
-# we also have this document specifying the entire world api:
-# https://github.com/ArchipelagoMW/Archipelago/blob/main/docs/world%20api.md
-
-
-# The world class is the heart and soul of an apworld implementation.
-# It holds all the data and functions required to build the world and submit it to the multiworld generator.
-# You could have all your world code in just this one class, but for readability and better structure,
-# it is common to split up world functionality into multiple files.
-# This implementation in particular has the following additional files, each covering one topic:
-# regions.py, locations.py, rules.py, items.py, options.py and web_world.py.
-# It is recommended that you read these in that specific order, then come back to the world class.
 class ScorpionSwampWorld(World):
     """
     Scorpion Swamp is a gamebook in the Fighting Fantasy series. Journey into the titular swamp to complete one of
@@ -38,6 +24,24 @@ class ScorpionSwampWorld(World):
 
     origin_region_name = "Fenmarge"
 
+    def generate_early(self) -> None:
+
+        # Universal Tracker Support
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            # Get the passed through slot data from the real generation
+            slot_data = re_gen_passthrough[self.game]
+
+            self.options.goal.value = slot_data["goal"]
+            self.options.required_amulets.value = slot_data["required_amulets"]
+            self.options.clearingsanity.value = slot_data["clearingsanity"]
+            self.options.spellsanity.value = slot_data["spellsanity"]
+            self.options.extra_locations.value = slot_data["extra_locations"]
+
+        # Sanitize options
+        if self.options.progressive_stats and not self.options.extra_locations:
+            self.options.extra_locations.value = True
+
     def create_regions(self) -> None:
         regions.create_and_connect_regions(self)
         locations.create_all_locations(self)
@@ -54,11 +58,7 @@ class ScorpionSwampWorld(World):
     def get_filler_item_name(self) -> str:
         return items.get_random_filler_item_name(self)
 
-    # There may be data that the game client will need to modify the behavior of the game.
-    # This is what slot_data exists for. Upon every client connection, the slot's slot_data is sent to the client.
-    # slot_data is just a dictionary using basic types, that will be converted to json when sent to the client.
     def fill_slot_data(self) -> Mapping[str, Any]:
-        # If you need access to the player's chosen options on the client side, there is a helper for that.
         return self.options.as_dict(
-            "hard_mode", "hammer", "extra_starting_chest", "confetti_explosiveness", "player_sprite"
+            "goal", "required_amulets", "clearingsanity", "spellsanity", "extra_locations"
         )

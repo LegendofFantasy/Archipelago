@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Choice, OptionGroup, PerGameCommonOptions, ItemDict, Toggle
+from Options import Choice, OptionGroup, PerGameCommonOptions, ItemDict, Toggle, NamedRange
 
 
 class Clearingsanity(Toggle):
@@ -68,6 +68,17 @@ class Goal(Choice):
     alias_evil = option_grimslade
 
 
+class RequiredAmulets(NamedRange):
+    """
+    Makes Grimslade's quest require this many Amulets to be completed.
+    """
+
+    display_name = "Required Amulets"
+    range_start = 0
+    range_end = 5
+    default = -1
+    special_range_names = {"vanilla" : -1}
+
 class FillerWeights(ItemDict):
     """
     For any filler items that are added, these are the weights that each choice will be added. Any of the game's items
@@ -88,6 +99,7 @@ class FillerWeights(ItemDict):
 @dataclass
 class ScorpionSwampOptions(PerGameCommonOptions):
     goal : Goal
+    required_amulets : RequiredAmulets
     clearingsanity : Clearingsanity
     spellsanity : Spellsanity
     extra_locations : ExtraLocations
@@ -97,8 +109,12 @@ class ScorpionSwampOptions(PerGameCommonOptions):
 
 option_groups = [
     OptionGroup(
-        "Gameplay Options",
-        [Goal, Clearingsanity, Spellsanity, ExtraLocations],
+        "Goal Options",
+        [Goal, RequiredAmulets],
+    ),
+    OptionGroup(
+        "Location Options",
+        [Clearingsanity, Spellsanity, ExtraLocations],
     ),
     OptionGroup(
         "Item Options",
@@ -107,8 +123,9 @@ option_groups = [
 ]
 
 option_presets = {
-    "maximum randomization": {
+    "recommended": {
         "goal": Goal.option_all,
+        "required_amulets": 5,
         "clearingsanity": True,
         "spellsanity": True,
         "extra_locations": True,

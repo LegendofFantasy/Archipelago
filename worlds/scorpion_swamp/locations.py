@@ -38,6 +38,7 @@ LOCATION_NAME_TO_ID = {
     "Game Over - Slain by Poomchukker's Guards" : 26,
     "Game Over - Explosion of Hellfire" : 27,
     "Game Over - The Master of Spiders Has No Friends" : 28,
+    "Game Over - Returning to Grimslade Empty-Handed": 64,
     "Halicar's Shop 1" : 29,
     "Halicar's Shop 2" : 30,
     "Halicar's Shop 3" : 31,
@@ -147,7 +148,8 @@ def create_regular_locations(world: ScorpionSwampWorld) -> None:
             "Game Over - Grimslade's Trap",
             "Game Over - Out the Window and Into the Dungeons",
             "Game Over - Slain by Poomchukker's Guards",
-            "Game Over - Explosion of Hellfire"
+            "Game Over - Explosion of Hellfire",
+            "Game Over - Returning to Grimslade Empty-Handed"
         ])
         add_locations_to_region(world, "Clearing 1", ["Game Over - A Feast for Rats"])
         add_locations_to_region(world, "Clearing 14", ["Game Over - Curse of the Birds"])
