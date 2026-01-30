@@ -19,8 +19,9 @@ def set_all_location_rules(world: ScorpionSwampWorld) -> None:
 
     # No additional rules are needed for common or clearingsanity locations
 
-    # Set rules for extra locations
-    if world.options.extra_locations:
+    # Set rules for extra locations, all of which need spellsanity for rules
+    # Otherwise the player can get the spells from a vanilla location
+    if world.options.extra_locations and world.options.spellsanity:
         set_rule(world.get_location("Game Over - Curse of the Birds"),
                  lambda state: state.has("Curse Spell Gem" , world.player))
         set_rule(world.get_location("Game Over - Dragged Down Into the River"),
@@ -44,8 +45,10 @@ def set_all_location_rules(world: ScorpionSwampWorld) -> None:
                      ), world.player, 3))
             # Require 3 items for logic for Halicar's shop since it's a long trip to get one at a time
 
-    # Set rules for non-victory event locations
-    set_rule(world.get_location("Rob the Master of Frogs"), lambda state: state.has("Illusion Spell Gem", world.player))
+        # Similar to the extra_locations, the player just gets the vanilla Spell Gem outside of spellsanity
+        set_rule(world.get_location("Rob the Master of Frogs"),
+                 lambda state: state.has("Illusion Spell Gem", world.player))
+
 
     # Set rules for victory event locations
     set_rule(world.get_location("Give Antherica to Selator"), lambda state: state.has("Antherica Berry", world.player))
