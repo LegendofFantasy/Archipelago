@@ -80,8 +80,8 @@ def connect_regions(world: ScorpionSwampWorld) -> None:
 
     # Connect Clearing 14
     connect_clearings(world, 14, [23])
-    # Clearing 14 connects to 16 only if the goal is Selator or Poomchukker
-    if world.options.goal.value in {1, 2}:
+    # Clearing 14 connects to 16 only in clearingsanity; otherwise this connection is irrelevant
+    if world.options.clearingsanity:
         world.get_region("Clearing 14").connect(world.get_region("Clearing 16"), "Clearing 14 to Clearing 16",
                                lambda state: state.has("Clearing 16", world.player))
 

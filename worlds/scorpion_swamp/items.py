@@ -77,7 +77,7 @@ DEFAULT_ITEM_CLASSIFICATIONS = {
     "Fire Spell Gem" : ItemClassification.useful,
     "Ice Spell Gem" : ItemClassification.useful,
     "Illusion Spell Gem" : ItemClassification.progression,
-    "Friendship Spell Gem" : ItemClassification.useful,
+    "Friendship Spell Gem" : ItemClassification.progression,
     "Growth Spell Gem" : ItemClassification.useful,
     "Bless Spell Gem" : ItemClassification.useful,
     "Fear Spell Gem" : ItemClassification.useful,
@@ -152,7 +152,7 @@ def create_item_with_correct_classification(world: ScorpionSwampWorld, name: str
     if name in {"Golden Magnet", "Violet Jewel", "Gold Chain"} and world.options.spellsanity:
         classification |= ItemClassification.progression
 
-    if name in {"Curse Spell Gem", "Ice Spell Gem", "Friendship Spell Gem"} and world.options.extra_locations:
+    if name in {"Curse Spell Gem", "Ice Spell Gem"} and world.options.extra_locations:
         classification |= ItemClassification.progression
 
     return ScorpionSwampItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
