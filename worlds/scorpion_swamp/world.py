@@ -24,6 +24,8 @@ class ScorpionSwampWorld(World):
 
     origin_region_name = "Fenmarge"
 
+    ut_can_gen_without_yaml = True
+
     def generate_early(self) -> None:
 
         # Universal Tracker Support
@@ -62,3 +64,8 @@ class ScorpionSwampWorld(World):
         return self.options.as_dict(
             "goal", "required_amulets", "clearingsanity", "spellsanity", "extra_locations"
         )
+
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:
+        # Trigger a regen in UT
+        return slot_data
