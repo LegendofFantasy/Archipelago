@@ -150,7 +150,8 @@ class ScorpionSwampContext(CommonContext):
             scouts = {}
             for location in self.locations_info:
                 scouts[location] = {
-                    "item" : self.item_names[self.locations_info[location].item],
+                    "item" : self.item_names.lookup_in_slot(
+                        self.locations_info[location].item, self.locations_info[location].player),
                     "player" : self.player_names[self.locations_info[location].player],
                     "flags" : self.locations_info[location].flags
                 }
@@ -214,16 +215,16 @@ async def game_watcher(ctx: ScorpionSwampContext):
                     victory = True
                 if file.find("request_scouts") > -1:
                     request_scouts = True
-                    os.remove(root + "/" + file)
+                    os.remove(root + "/request_scouts")
                 if file.find("v_selator") > -1:
                     goals_complete |= SELATOR
-                    os.remove(root + "/" + file)
+                    os.remove(root + "/v_selator")
                 if file.find("v_poomchukker") > -1:
                     goals_complete |= POOMCHUKKER
-                    os.remove(root + "/" + file)
+                    os.remove(root + "/v_poomchukker")
                 if file.find("v_grimslade") > -1:
                     goals_complete |= GRIMSLADE
-                    os.remove(root + "/" + file)
+                    os.remove(root + "/v_grimslade")
         ctx.locations_checked = sending
         message = [{"cmd": 'LocationChecks', "locations": sending}]
         if hints:
