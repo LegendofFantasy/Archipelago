@@ -26,10 +26,15 @@ else:
 if not os.path.exists(game_communication_path):
     os.makedirs(game_communication_path)
 
+# Define some values
+SELATOR = 0b100
+POOMCHUKKER = 0b010
+GRIMSLADE = 0b001
+
 
 ###Client###
 if __name__ == "__main__":
-    Utils.init_logging("ScorpionswampClient", exception_logger="Client")
+    Utils.init_logging("ScorpionSwampClient", exception_logger="Client")
 
 from NetUtils import NetworkItem, ClientStatus
 from CommonClient import gui_enabled, logger, get_base_parser, ClientCommandProcessor, \
@@ -45,7 +50,7 @@ class ScorpionSwampClientCommandProcessor(ClientCommandProcessor):
 
 class ScorpionSwampContext(CommonContext):
     command_processor: int = ScorpionSwampClientCommandProcessor
-    game = "AP Pathfinder 2e"
+    game = "Scorpion Swamp"
     items_handling = 0b111  # full remote
 
     def __init__(self, server_address, password):
@@ -141,17 +146,44 @@ class ScorpionSwampContext(CommonContext):
                     with open(os.path.join(self.game_communication_path, filename), 'w') as f:
                         f.close()
 
+        if cmd in {"LocationInfo"}:
+            scouts = {}
+            for location in self.locations_info:
+                scouts[location] = {
+                    "item" : self.item_names[self.locations_info[location].item],
+                    "player" : self.player_names[self.locations_info[location].player],
+                    "flags" : self.locations_info[location].flags
+                }
+            with open(os.path.join(self.game_communication_path, "scouts"), 'w') as f:
+                f.write(json.dumps(scouts))
+                f.close()
+
+        if cmd in {"SetReply"}:
+            if args["key"] == f"scorpion_swamp_{self.slot}":
+                goals_complete = args["value"]
+
+                if goals_complete & SELATOR == SELATOR:
+                    with open(os.path.join(self.game_communication_path, "selator"), 'w') as f:
+                        f.close()
+                if goals_complete & POOMCHUKKER == POOMCHUKKER:
+                    with open(os.path.join(self.game_communication_path, "poomchukker"), 'w') as f:
+                        f.close()
+                if goals_complete & GRIMSLADE == GRIMSLADE:
+                    with open(os.path.join(self.game_communication_path, "grimslade"), 'w') as f:
+                        f.close()
+
+
     def run_gui(self):
         """Import kivy UI system and start running it as self.ui_task."""
         from kvui import GameManager
 
-        class APPF2eManager(GameManager):
+        class ScorpionSwampManager(GameManager):
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
-            base_title = "Archipelago AP Pathfinder 2e Client"
+            base_title = "Archipelago Scorpion Swamp Client"
 
-        self.ui = APPF2eManager(self)
+        self.ui = ScorpionSwampManager(self)
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
 
@@ -164,17 +196,45 @@ async def game_watcher(ctx: ScorpionSwampContext):
             await ctx.send_msgs(sync_msg)
             ctx.syncing = False
         sending = []
+        hints = []
         victory = False
+        request_scouts = False
+        goals_complete = 0
         for root, dirs, files in os.walk(ctx.game_communication_path):
             for file in files:
                 if file.find("send") > -1:
                     st = file.split("send", -1)[1]
                     if st != "nil":
                         sending = sending+[(int(st))]
+                if file.find("hint") > -1:
+                    st = file.split("hint", -1)[1]
+                    if st != "nil":
+                        hints = hints+[(int(st))]
                 if file.find("victory") > -1:
                     victory = True
+                if file.find("request_scouts") > -1:
+                    request_scouts = True
+                    os.remove(root + "/" + file)
+                if file.find("v_selator") > -1:
+                    goals_complete |= SELATOR
+                    os.remove(root + "/" + file)
+                if file.find("v_poomchukker") > -1:
+                    goals_complete |= POOMCHUKKER
+                    os.remove(root + "/" + file)
+                if file.find("v_grimslade") > -1:
+                    goals_complete |= GRIMSLADE
+                    os.remove(root + "/" + file)
         ctx.locations_checked = sending
         message = [{"cmd": 'LocationChecks', "locations": sending}]
+        if hints:
+            message.append({"cmd": "CreateHints", "locations": hints})
+        if request_scouts:
+            message.append({"cmd": "LocationScouts", "locations": list(ctx.server_locations)})
+        if goals_complete:
+            message.append({"cmd": "Set", "key": f"scorpion_swamp_{ctx.slot}", "default": 0, "want_reply": True,
+                            "operations": [{"operation": "default", "value" : 0},
+                                           {"operation": "or", "value" : goals_complete}]
+                            })
         await ctx.send_msgs(message)
         if not ctx.finished_game and victory:
             await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])

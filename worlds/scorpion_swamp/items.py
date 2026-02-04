@@ -70,6 +70,12 @@ ITEM_NAME_TO_ID = {
     "Clearing 35" : 135,
 }
 
+ITEM_NAME_GROUPS = {
+    "Clearing" : {name for name in ITEM_NAME_TO_ID.keys() if ITEM_NAME_TO_ID[name] > 100},
+    "Progressive Statistic" : {"Progressive Skill", "Progressive Stamina", "Progressive Luck"},
+    "Progressive Stat" : {"Progressive Skill", "Progressive Stamina", "Progressive Luck"},
+}
+
 DEFAULT_ITEM_CLASSIFICATIONS = {
     "Skill Spell Gem" : ItemClassification.filler,
     "Stamina Spell Gem" : ItemClassification.filler,
