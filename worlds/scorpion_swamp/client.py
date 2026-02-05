@@ -111,6 +111,9 @@ class ScorpionSwampContext(CommonContext):
                     f.write(str(args['slot_data'][slot_data_key]))
                     f.close()
             #End Handle Slot Data
+            if args['slot_data']['goal'] == 4:
+                with open(os.path.join(self.game_communication_path, "get_goals_completed"), 'w') as f:
+                    f.close()
             
         if cmd in {"ReceivedItems"}:
             start_index = args["index"]
@@ -201,6 +204,7 @@ async def game_watcher(ctx: ScorpionSwampContext):
         victory = False
         request_scouts = False
         goals_complete = 0
+        get_goals_completed = False
         for root, dirs, files in os.walk(ctx.game_communication_path):
             for file in files:
                 if file.find("send") > -1:
@@ -225,6 +229,9 @@ async def game_watcher(ctx: ScorpionSwampContext):
                 if file.find("v_grimslade") > -1:
                     goals_complete |= GRIMSLADE
                     os.remove(root + "/v_grimslade")
+                if file.find("get_goals_completed") > -1:
+                    get_goals_completed = True
+                    os.remove(root + "/get_goals_completed")
         ctx.locations_checked = sending
         message = [{"cmd": 'LocationChecks', "locations": sending}]
         if hints:
@@ -235,6 +242,10 @@ async def game_watcher(ctx: ScorpionSwampContext):
             message.append({"cmd": "Set", "key": f"scorpion_swamp_{ctx.slot}", "default": 0, "want_reply": True,
                             "operations": [{"operation": "default", "value" : 0},
                                            {"operation": "or", "value" : goals_complete}]
+                            })
+        if get_goals_completed:
+            message.append({"cmd": "Set", "key": f"scorpion_swamp_{ctx.slot}", "default": 0, "want_reply": True,
+                            "operations": [{"operation": "default", "value": 0}]
                             })
         await ctx.send_msgs(message)
         if not ctx.finished_game and victory:
