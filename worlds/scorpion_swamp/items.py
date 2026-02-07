@@ -155,7 +155,7 @@ def create_item_with_correct_classification(world: ScorpionSwampWorld, name: str
 
     classification = DEFAULT_ITEM_CLASSIFICATIONS[name]
 
-    if name in {"Golden Magnet", "Violet Jewel", "Gold Chain"} and world.options.spellsanity:
+    if name in {"Golden Magnet", "Violet Jewel", "Gold Chain", "Horn of a Unicorn"} and world.options.spellsanity:
         classification |= ItemClassification.progression
 
     if name in {"Curse Spell Gem", "Ice Spell Gem"} and world.options.extra_locations:

@@ -96,7 +96,8 @@ def set_all_location_rules(world: ScorpionSwampWorld) -> None:
             "Spider Amulet",
             "Golden Magnet",
             "Violet Jewel",
-            "Gold Chain"
+            "Gold Chain",
+            "Horn of a Unicorn"
         ]
 
         # These amulets all require you to be on Grimslade's quest which prevents you from using the
