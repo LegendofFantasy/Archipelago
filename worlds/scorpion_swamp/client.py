@@ -21,10 +21,14 @@ check_num = 0
 ###Set up game communication path###
 if "localappdata" in os.environ:
     game_communication_path = os.path.expandvars(r"%localappdata%/AP Fighting Fantasy/Scorpion Swamp")
+    game_cache_path = os.path.expandvars(r"%localappdata%/AP Fighting Fantasy/cache")
 else:
     game_communication_path = os.path.expandvars(r"$HOME/AP Fighting Fantasy/Scorpion Swamp")
+    game_cache_path = os.path.expandvars(r"$HOME/AP Fighting Fantasy/cache")
 if not os.path.exists(game_communication_path):
     os.makedirs(game_communication_path)
+if not os.path.exists(game_cache_path):
+    os.makedirs(game_cache_path)
 
 # Define some values
 SELATOR = 0b100
@@ -55,16 +59,21 @@ class ScorpionSwampContext(CommonContext):
 
     def __init__(self, server_address, password):
         super(ScorpionSwampContext, self).__init__(server_address, password)
+        self.scouts_seed = ""
         self.send_index: int = 0
         self.syncing = False
         self.awaiting_bridge = False
         # self.game_communication_path: files go in this path to pass data between us and the actual game
         if "localappdata" in os.environ:
             self.game_communication_path = os.path.expandvars(r"%localappdata%/AP Fighting Fantasy/Scorpion Swamp")
+            self.game_cache_path = os.path.expandvars(r"%localappdata%/AP Fighting Fantasy/cache")
         else:
             self.game_communication_path = os.path.expandvars(r"$HOME/AP Fighting Fantasy/Scorpion Swamp")
+            self.game_cache_path = os.path.expandvars(r"$HOME/AP Fighting Fantasy/cache")
         if not os.path.exists(self.game_communication_path):
             os.makedirs(self.game_communication_path)
+        if not os.path.exists(self.game_cache_path):
+            os.makedirs(self.game_cache_path)
         for root, dirs, files in os.walk(self.game_communication_path):
             for file in files:
                 if file.find("obtain") <= -1:
@@ -98,6 +107,11 @@ class ScorpionSwampContext(CommonContext):
                     os.remove(root+"/"+file)
 
     def on_package(self, cmd: str, args: dict):
+
+        if cmd in {"RoomInfo"}:
+            if not self.scouts_seed:
+                self.scouts_seed = args["seed_name"]
+
         if cmd in {"Connected"}:
             if not os.path.exists(self.game_communication_path):
                 os.makedirs(self.game_communication_path)
@@ -114,6 +128,9 @@ class ScorpionSwampContext(CommonContext):
             if args['slot_data']['goal'] == 4:
                 with open(os.path.join(self.game_communication_path, "get_goals_completed"), 'w') as f:
                     f.close()
+            with open(os.path.join(self.game_communication_path, "scouts"), 'a') as f:
+                f.write(f"{self.scouts_seed}_{self.slot}")
+                f.close()
             
         if cmd in {"ReceivedItems"}:
             start_index = args["index"]
@@ -158,7 +175,7 @@ class ScorpionSwampContext(CommonContext):
                     "player" : self.player_names[self.locations_info[location].player],
                     "flags" : self.locations_info[location].flags
                 }
-            with open(os.path.join(self.game_communication_path, "scouts"), 'w') as f:
+            with open(os.path.join(self.game_cache_path, f"{self.scouts_seed}_{self.slot}"), 'w') as f:
                 f.write(json.dumps(scouts))
                 f.close()
 
