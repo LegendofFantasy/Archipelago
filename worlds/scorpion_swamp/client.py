@@ -251,7 +251,8 @@ async def game_watcher(ctx: ScorpionSwampContext):
                     get_goals_completed = True
                     os.remove(root + "/get_goals_completed")
         ctx.locations_checked = sending
-        message = [{"cmd": 'LocationChecks', "locations": sending}]
+        await ctx.check_locations(sending)
+        message = []
         if hints:
             message.append({"cmd": "CreateHints", "locations": hints})
         if request_scouts:
@@ -265,7 +266,8 @@ async def game_watcher(ctx: ScorpionSwampContext):
             message.append({"cmd": "Set", "key": f"scorpion_swamp_{ctx.slot}", "default": 0, "want_reply": True,
                             "operations": [{"operation": "default", "value": 0}]
                             })
-        await ctx.send_msgs(message)
+        if message:
+            await ctx.send_msgs(message)
         if not ctx.finished_game and victory:
             await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
             ctx.finished_game = True
