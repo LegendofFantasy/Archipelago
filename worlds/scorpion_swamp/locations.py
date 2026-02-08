@@ -38,7 +38,7 @@ LOCATION_NAME_TO_ID = {
     "Game Over - Slain by Poomchukker's Guards" : 26,
     "Game Over - Explosion of Hellfire" : 27,
     "Game Over - The Master of Spiders Has No Friends" : 28,
-    "Game Over - Returning to Grimslade Empty-Handed": 64,
+    "Game Over - Returning to Grimslade Empty-Handed": 99,
     "Halicar's Shop 1" : 29,
     "Halicar's Shop 2" : 30,
     "Halicar's Shop 3" : 31,
@@ -74,6 +74,9 @@ LOCATION_NAME_TO_ID = {
     "Gift from the Master of Gardens 3" : 61,
     "Unicorn Clearing Spell Gem 1" : 62,
     "Unicorn Clearing Spell Gem 2" : 63,
+    "Gronar - Directions to Selator" : 64,
+    "Gronar - Directions to Poomchukker" : 65,
+    "Gronar - Directions to Grimslade" : 66,
     "Clearing 1 Entered" : 101,
     "Clearing 3 Entered" : 103,
     "Clearing 4 Entered" : 104,
@@ -106,6 +109,60 @@ LOCATION_NAME_TO_ID = {
     "Clearing 33 Entered" : 133,
     "Clearing 34 Entered" : 134,
     "Clearing 35 Entered" : 135,
+}
+
+LOCATION_NAME_GROUPS = {
+    "Clearing" : {name for name in LOCATION_NAME_TO_ID.keys() if LOCATION_NAME_TO_ID[name] > 100},
+    "Selator" : {
+        "Gronar - Directions to Selator",
+        "Selator's Spell Gem 1",
+        "Selator's Spell Gem 2",
+        "Selator's Spell Gem 3",
+        "Selator's Spell Gem 4",
+        "Selator's Spell Gem 5",
+        "Selator's Spell Gem 6",
+        "Selator's Spell Gem 7",
+        "Selator's Spell Gem 8",
+        "Selator's Spell Gem 9",
+        "Gift from the Mistress of Birds",
+        "Gift from the Master of Gardens 1",
+        "Gift from the Master of Gardens 2",
+        "Gift from the Master of Gardens 3",
+        "Game Over - Failing Selator's Quest"
+    },
+    "Poomchukker" : {
+        "Gronar - Directions to Poomchukker",
+        "Poomchukker's Spell Gem 1",
+        "Poomchukker's Spell Gem 2",
+        "Poomchukker's Spell Gem 3",
+        "Poomchukker's Spell Gem 4",
+        "Poomchukker's Spell Gem 5",
+        "Poomchukker's Spell Gem 6",
+        "Game Over - A Hundred Pieces of Gold",
+        "Game Over - Failing Poomchukker's Quest",
+        "Game Over - Out the Window and Into the Dungeons",
+        "Game Over - Slain by Poomchukker's Guards"
+    },
+    "Grimslade" : {
+        "Gronar - Directions to Grimslade",
+        "Grimslade's Spell Gem 1",
+        "Grimslade's Spell Gem 2",
+        "Grimslade's Spell Gem 3",
+        "Grimslade's Spell Gem 4",
+        "Grimslade's Spell Gem 5",
+        "Grimslade's Spell Gem 6",
+        "Grimslade's Spell Gem 7",
+        "Grimslade's Spell Gem 8",
+        "Grimslade's Spell Gem 9",
+        "Slay Grimslade",
+        "Gift from Grimslade",
+        "Slay the Ranger",
+        "Game Over - Itsy Bitsy Spider",
+        "Game Over - Magic Carpet Ride",
+        "Game Over - Grimslade's Trap",
+        "Game Over - Explosion of Hellfire",
+        "Game Over - Returning to Grimslade Empty-Handed"
+    }
 }
 
 
@@ -206,10 +263,19 @@ def create_regular_locations(world: ScorpionSwampWorld) -> None:
             "Unicorn Clearing Spell Gem 2"
         ])
 
-        # add the locations for the clearingsanity option
+    # add the locations for the clearingsanity option
+    if world.options.clearingsanity:
         for i in range(1, 36):
             if i not in {2, 22, 31}:
                 add_locations_to_region(world, f"Clearing {i}", [f"Clearing {i} Entered"])
+
+    # add the locations for the wizardsanity option
+    if world.options.wizardsanity:
+        add_locations_to_region(world, "Fenmarge", [
+            "Gronar - Directions to Selator",
+            "Gronar - Directions to Poomchukker",
+            "Gronar - Directions to Grimslade"
+        ])
 
 
 

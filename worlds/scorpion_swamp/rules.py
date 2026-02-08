@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from worlds.generic.Rules import set_rule
+from worlds.generic.Rules import set_rule, add_rule
 from .options import Goal
 
 if TYPE_CHECKING:
@@ -123,7 +123,6 @@ def set_all_location_rules(world: ScorpionSwampWorld) -> None:
                     lambda state: state.has("Illusion Spell Gem", world.player))
 
 
-
     # Set rules for victory event locations
     set_rule(world.get_location("Give Antherica to Selator"), lambda state: state.has("Antherica Berry", world.player))
     set_rule(world.get_location("Give Map to Poomchukker"), lambda state: state.has("Map to Willowbend", world.player))
@@ -143,6 +142,32 @@ def set_all_location_rules(world: ScorpionSwampWorld) -> None:
             "Spider Amulet",
             "Flower Amulet"
         ), world.player))
+
+    # Add rules for wizardsanity locations and locations affected by wizardsanity including victory event locations
+    if world.options.wizardsanity:
+
+        locations = [name for name in [location.name for location in world.get_locations()]
+                     if name in world.location_name_groups["Selator"]]
+        for name in locations:
+            add_rule(world.get_location(name), lambda state: state.has("Selator", world.player))
+
+        locations = [name for name in [location.name for location in world.get_locations()]
+                     if name in world.location_name_groups["Poomchukker"]]
+        for name in locations:
+            add_rule(world.get_location(name), lambda state: state.has("Poomchukker", world.player))
+
+        locations = [name for name in [location.name for location in world.get_locations()]
+                     if name in world.location_name_groups["Grimslade"]]
+        for name in locations:
+            add_rule(world.get_location(name), lambda state: state.has("Grimslade", world.player))
+
+        add_rule(world.get_location("Give Antherica to Selator"), lambda state: state.has("Selator", world.player))
+        add_rule(world.get_location("Give Map to Poomchukker"), lambda state: state.has("Poomchukker", world.player))
+        add_rule(world.get_location("Give Amulets to Grimslade"), lambda state: state.has("Grimslade", world.player))
+        add_rule(world.get_location("Negotiate with the Mistress of Birds"),
+                 lambda state: state.has("Grimslade", world.player))
+        add_rule(world.get_location("Rob the Master of Frogs"), lambda state: state.has("Grimslade", world.player))
+        add_rule(world.get_location("Slay the Master of Gardens"), lambda state: state.has("Grimslade", world.player))
 
 
 def set_completion_condition(world: ScorpionSwampWorld) -> None:

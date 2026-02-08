@@ -37,6 +37,9 @@ ITEM_NAME_TO_ID = {
     "Progressive Skill" : 26,
     "Progressive Stamina" : 27,
     "Progressive Luck" : 28,
+    "Selator" : 29,
+    "Grimslade" : 30,
+    "Poomchukker" : 31,
     "Clearing 3" : 103,
     "Clearing 4" : 104,
     "Clearing 5" : 105,
@@ -74,6 +77,7 @@ ITEM_NAME_GROUPS = {
     "Clearing" : {name for name in ITEM_NAME_TO_ID.keys() if ITEM_NAME_TO_ID[name] > 100},
     "Progressive Statistic" : {"Progressive Skill", "Progressive Stamina", "Progressive Luck"},
     "Progressive Stat" : {"Progressive Skill", "Progressive Stamina", "Progressive Luck"},
+    "Wizard" : {"Selator", "Poomchukker", "Grimslade"}
 }
 
 DEFAULT_ITEM_CLASSIFICATIONS = {
@@ -105,6 +109,9 @@ DEFAULT_ITEM_CLASSIFICATIONS = {
     "Progressive Skill" : ItemClassification.useful,
     "Progressive Stamina" : ItemClassification.useful,
     "Progressive Luck" : ItemClassification.useful,
+    "Selator" : ItemClassification.progression,
+    "Grimslade" : ItemClassification.progression,
+    "Poomchukker" : ItemClassification.progression,
     "Clearing 3" : ItemClassification.progression,
     "Clearing 4" : ItemClassification.progression,
     "Clearing 5" : ItemClassification.progression,
@@ -274,6 +281,12 @@ def create_all_items(world: ScorpionSwampWorld) -> None:
             world.create_item("Clearing 34"),
             world.create_item("Clearing 35"),
         ])
+
+    if world.options.wizardsanity:
+        itempool.extend([
+            world.create_item(i) for i in ["Selator", "Poomchukker", "Grimslade"] if i != world.starting_wizard
+        ])
+        world.push_precollected(world.create_item(world.starting_wizard))
 
     filler_count = len(world.multiworld.get_unfilled_locations(world.player)) - len(itempool)
 

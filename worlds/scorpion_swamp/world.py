@@ -1,6 +1,7 @@
 from collections.abc import Mapping
 from typing import Any
 
+from BaseClasses import MultiWorld
 from worlds.AutoWorld import World
 
 from . import items, locations, regions, rules, web_world
@@ -20,6 +21,7 @@ class ScorpionSwampWorld(World):
     options: scorpion_swamp_options.ScorpionSwampOptions
 
     location_name_to_id = locations.LOCATION_NAME_TO_ID
+    location_name_groups = locations.LOCATION_NAME_GROUPS
     item_name_to_id = items.ITEM_NAME_TO_ID
     item_name_groups = items.ITEM_NAME_GROUPS
 
@@ -27,7 +29,15 @@ class ScorpionSwampWorld(World):
 
     ut_can_gen_without_yaml = True
 
+    def __init__(self, world: MultiWorld, player: int):
+        super().__init__(world, player)
+
+        self.starting_wizard = ""
+
     def generate_early(self) -> None:
+
+        if self.options.wizardsanity:
+            self.starting_wizard = self.random.choice(["Selator", "Poomchukker", "Grimslade"])
 
         # Universal Tracker Support
         re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
@@ -40,6 +50,8 @@ class ScorpionSwampWorld(World):
             self.options.clearingsanity.value = slot_data["clearingsanity"]
             self.options.spellsanity.value = slot_data["spellsanity"]
             self.options.extra_locations.value = slot_data["extra_locations"]
+            self.options.wizardsanity.value = slot_data["wizardsanity"]
+            self.starting_wizard = slot_data["starting_wizard"]
 
         # Sanitize options
         if self.options.progressive_stats and not self.options.extra_locations:
@@ -62,9 +74,11 @@ class ScorpionSwampWorld(World):
         return items.get_random_filler_item_name(self)
 
     def fill_slot_data(self) -> Mapping[str, Any]:
-        return self.options.as_dict(
-            "goal", "required_amulets", "clearingsanity", "spellsanity", "extra_locations"
+        data =  self.options.as_dict(
+            "goal", "required_amulets", "clearingsanity", "spellsanity", "wizardsanity", "extra_locations"
         )
+        data["starting_wizard"] = self.starting_wizard
+        return data
 
     @staticmethod
     def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:

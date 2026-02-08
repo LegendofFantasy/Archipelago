@@ -232,6 +232,7 @@ async def game_watcher(ctx: ScorpionSwampContext):
                     st = file.split("hint", -1)[1]
                     if st != "nil":
                         hints = hints+[(int(st))]
+                    os.remove(root + "/" + file)
                 if file.find("victory") > -1:
                     victory = True
                     os.remove(root + "/victory")

@@ -21,6 +21,14 @@ class Spellsanity(Toggle):
 
     display_name = "Spellsanity"
 
+class Wizardsanity(Toggle):
+    """
+    Adds the three wizards to the item pool. You will always start with one of them. Three locations will be added
+    where you get directions to where the wizards live.
+    """
+
+    display_name = "Wizardsanity"
+
 
 class ExtraLocations(Toggle):
     """
@@ -102,6 +110,7 @@ class ScorpionSwampOptions(PerGameCommonOptions):
     required_amulets : RequiredAmulets
     clearingsanity : Clearingsanity
     spellsanity : Spellsanity
+    wizardsanity : Wizardsanity
     extra_locations : ExtraLocations
     progressive_stats : ProgressiveStats
     filler_weights : FillerWeights
@@ -114,7 +123,7 @@ option_groups = [
     ),
     OptionGroup(
         "Location Options",
-        [Clearingsanity, Spellsanity, ExtraLocations],
+        [Clearingsanity, Spellsanity, Wizardsanity, ExtraLocations],
     ),
     OptionGroup(
         "Item Options",
@@ -128,6 +137,7 @@ option_presets = {
         "required_amulets": 5,
         "clearingsanity": True,
         "spellsanity": True,
+        "wizardsanity": True,
         "extra_locations": True,
         "progressive_stats": True,
         "filler_weights": FillerWeights.default,
