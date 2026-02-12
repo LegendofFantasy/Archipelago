@@ -180,7 +180,7 @@ class ScorpionSwampContext(CommonContext):
                 f.close()
 
         if cmd in {"SetReply"}:
-            if args["key"] == f"scorpion_swamp_{self.slot}":
+            if args["key"] == f"scorpion_swamp_{self.team}_{self.slot}":
                 goals_complete = args["value"]
 
                 if goals_complete & SELATOR == SELATOR:
@@ -259,12 +259,14 @@ async def game_watcher(ctx: ScorpionSwampContext):
         if request_scouts:
             message.append({"cmd": "LocationScouts", "locations": list(ctx.server_locations)})
         if goals_complete:
-            message.append({"cmd": "Set", "key": f"scorpion_swamp_{ctx.slot}", "default": 0, "want_reply": True,
+            message.append({"cmd": "Set", "key": f"scorpion_swamp_{ctx.team}_{ctx.slot}", "default": 0,
+                            "want_reply": True,
                             "operations": [{"operation": "default", "value" : 0},
                                            {"operation": "or", "value" : goals_complete}]
                             })
         if get_goals_completed:
-            message.append({"cmd": "Set", "key": f"scorpion_swamp_{ctx.slot}", "default": 0, "want_reply": True,
+            message.append({"cmd": "Set", "key": f"scorpion_swamp_{ctx.team}_{ctx.slot}", "default": 0,
+                            "want_reply": True,
                             "operations": [{"operation": "default", "value": 0}]
                             })
         if message:
