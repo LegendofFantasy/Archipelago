@@ -41,8 +41,13 @@ if __name__ == "__main__":
     Utils.init_logging("ScorpionSwampClient", exception_logger="Client")
 
 from NetUtils import NetworkItem, ClientStatus
-from CommonClient import gui_enabled, logger, get_base_parser, ClientCommandProcessor, \
+from CommonClient import logger, get_base_parser, ClientCommandProcessor, \
     CommonContext, server_loop
+
+try:
+    from Utils import gui_enabled
+except ImportError:
+    from CommonClient import gui_enabled
 
 
 def check_stdin() -> None:
