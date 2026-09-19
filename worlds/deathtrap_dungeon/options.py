@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import OptionGroup, PerGameCommonOptions, ItemDict, Toggle, Range, Choice
+from Options import OptionGroup, PerGameCommonOptions, ItemDict, Toggle, Range, Choice, StartInventoryPool
 
 
 class Trialmastersanity(Toggle):
@@ -137,6 +137,7 @@ class DeathtrapDungeonOptions(PerGameCommonOptions):
     extra_locations : ExtraLocations
     progressive_stats : ProgressiveStats
     filler_weights : FillerWeights
+    start_inventory_from_pool: StartInventoryPool
 
 
 option_groups = [
