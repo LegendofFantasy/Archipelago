@@ -9,8 +9,8 @@ from . import options as deathtrap_dungeon_options
 
 class DeathtrapDungeonWorld(World):
     """
-    Scorpion Swamp is a gamebook in the Fighting Fantasy series. Journey into the titular swamp to complete one of
-    three quests given by one of three wizards. Only YOU can brave the Scorpion Swamp!
+    Deathtrap Dungeon is a gamebook in the Fighting Fantasy series. Journey into the titular dungeon and reach the exit
+    to be crowned Champion of Deathtrap Dungeon. Only YOU can defeat Deathtrap Dungeon!
     """
 
     game = "Deathtrap Dungeon"
