@@ -1,0 +1,908 @@
+[
+  {
+    "name": "Entrance Box",
+    "sections": [
+      {
+        "name": "Gift from Sukumvit 1",
+        "item_count": 1
+      },
+      {
+        "name": "Gift from Sukumvit 2",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 242,
+        "y": 1236,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Starting Potion",
+    "sections": [
+      {
+        "name": "Starting Potion",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 280,
+        "y": 1293,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Starting Shield",
+    "sections": [
+      {
+        "name": "Starting Shield",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 200,
+        "y": 1294,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Bell",
+    "sections": [
+      {
+        "name": "Game Over - The Bell Tolls for Thee",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 150,
+        "y": 1191,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Hobgoblins",
+    "sections": [
+      {
+        "name": "Game Over - Drinking Acid",
+        "item_count": 1
+      },
+      {
+        "name": "Slay the Hobgoblins",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 113,
+        "y": 1108,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Abandoned Backpack",
+    "sections": [
+      {
+        "name": "Abandoned Backpack",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 213,
+        "y": 1112,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Heated Corridor",
+    "sections": [
+      {
+        "name": "Game Over - Too Hot to Handle",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 329,
+        "y": 1118,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Hook Across a Pit",
+    "sections": [
+      {
+        "name": "Hanging from an Iron Hook",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 293,
+        "y": 1061,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Orcs",
+    "sections": [
+      {
+        "name": "Slay the Orcs 1",
+        "item_count": 1
+      },
+      {
+        "name": "Slay the Orcs 2",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 329,
+        "y": 1008,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Barbarian's Room",
+    "sections": [
+      {
+        "name": "Goblet of Red Liquid",
+        "item_count": 1
+      },
+      {
+        "name": "Meeting the Barbarian",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 271,
+        "y": 975,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Large Idol",
+    "sections": [
+      {
+        "name": "Game Over - Poisoned Emerald",
+        "item_count": 1
+      },
+      {
+        "name": "Idol's Left Eye",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 213,
+        "y": 962,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Dark Room",
+    "sections": [
+      {
+        "name": "Game Over - Hail Sukumvit",
+        "item_count": 1
+      },
+      {
+        "name": "Gift from the Booming Voice",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 166,
+        "y": 922,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Giant Fly's Room",
+    "sections": [
+      {
+        "name": "Pit of Worms",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 259,
+        "y": 896,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Copper Door",
+    "sections": [
+      {
+        "name": "Using the Copper Key",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 213,
+        "y": 854,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Rock Grub's Tunnel",
+    "sections": [
+      {
+        "name": "Game Over - Slain by the Rock Grub's Mate",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 140,
+        "y": 809,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Mirror Trap",
+    "sections": [
+      {
+        "name": "Game Over - Mirrored Headache",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 64,
+        "y": 855,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Pit Trap",
+    "sections": [
+      {
+        "name": "Bottom of the Pit",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 318,
+        "y": 855,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Horath's Room",
+    "sections": [
+      {
+        "name": "Game Over - Another Stone for the Garden",
+        "item_count": 1
+      },
+      {
+        "name": "Meeting Horath",
+        "item_count": 1
+      },
+      {
+        "name": "Meeting the Knight",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 343,
+        "y": 811,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Boulder Trap",
+    "sections": [
+      {
+        "name": "Game Over - Crushed by the Boulder",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 378,
+        "y": 669,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Mushroom Room",
+    "sections": [
+      {
+        "name": "Game Over - Eating the Mushrooms",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 309,
+        "y": 758,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Goblins' Room",
+    "sections": [
+      {
+        "name": "Game Over - Knock-Knock",
+        "item_count": 1
+      },
+      {
+        "name": "Goblins' Cupboard 1",
+        "item_count": 1
+      },
+      {
+        "name": "Goblins' Cupboard 2",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 249,
+        "y": 758,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Skull Room",
+    "sections": [
+      {
+        "name": "Skull's Left Eye",
+        "item_count": 1
+      },
+      {
+        "name": "Skull's Right Eye",
+        "item_count": 1
+      },
+      {
+        "name": "Wooden Ball 1",
+        "item_count": 1
+      },
+      {
+        "name": "Wooden Ball 2",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 162,
+        "y": 720,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Mirror Demon's Room",
+    "sections": [
+      {
+        "name": "Game Over - Man in the Mirror",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 64,
+        "y": 757,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Dead Orcs",
+    "sections": [
+      {
+        "name": "Orc's Necklace",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 250,
+        "y": 599,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Ian's Cell",
+    "sections": [
+      {
+        "name": "Meeting Ian Livingstone",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 286,
+        "y": 708,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Iron Pipe Trap",
+    "sections": [
+      {
+        "name": "Game Over - Fifty-Metre Freefall",
+        "item_count": 1
+      },
+      {
+        "name": "Wooden Box in the Iron Pipe 1",
+        "item_count": 1
+      },
+      {
+        "name": "Wooden Box in the Iron Pipe 2",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 286,
+        "y": 659,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Throm's Intersection",
+    "sections": [
+      {
+        "name": "Meeting Throm",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 250,
+        "y": 529,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Chamber of the Dead",
+    "sections": [
+      {
+        "name": "Game Over - Chamber of the Dead",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 68,
+        "y": 527,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Torgrim's Trial",
+    "sections": [
+      {
+        "name": "Game Over - All Brawn and No Brain",
+        "item_count": 1
+      },
+      {
+        "name": "Game Over - Dying in the Arena of Death",
+        "item_count": 1
+      },
+      {
+        "name": "Meeting Torgrim",
+        "item_count": 1
+      },
+      {
+        "name": "Slay the Dwarf",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 370,
+        "y": 464,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Shuffling Servant",
+    "sections": [
+      {
+        "name": "Meeting the Servant",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 311,
+        "y": 413,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Brass Door (West)",
+    "sections": [
+      {
+        "name": "Using the Brass Key",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 207,
+        "y": 413,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Medusa's Room",
+    "sections": [
+      {
+        "name": "Game Over - Stony Gaze",
+        "item_count": 1
+      },
+      {
+        "name": "Slay the Medusa",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 101,
+        "y": 413,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Brass Door (North) and Wooden Casket",
+    "sections": [
+      {
+        "name": "Using the Brass Key",
+        "item_count": 1
+      },
+      {
+        "name": "Wooden Casket",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 371,
+        "y": 366,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Demon Chair",
+    "sections": [
+      {
+        "name": "Demon Chair's Secret Panel",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 258,
+        "y": 360,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Bloodbeast's Room",
+    "sections": [
+      {
+        "name": "Game Over - Food for the Bloodbeast",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 478,
+        "y": 360,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Igbut's Trial",
+    "sections": [
+      {
+        "name": "Game Over - Lacking a Jewel",
+        "item_count": 1
+      },
+      {
+        "name": "Meeting Igbut",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 478,
+        "y": 297,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Boa Constrictor's Room",
+    "sections": [
+      {
+        "name": "Gift from the Elf 1",
+        "item_count": 1
+      },
+      {
+        "name": "Gift from the Elf 2",
+        "item_count": 1
+      },
+      {
+        "name": "Gift from the Elf 3",
+        "item_count": 1
+      },
+      {
+        "name": "Gift from the Elf 4",
+        "item_count": 1
+      },
+      {
+        "name": "Meeting the Elf",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 206,
+        "y": 312,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Iron Grille",
+    "sections": [
+      {
+        "name": "Iron Grille - Leather Pouch",
+        "item_count": 1
+      },
+      {
+        "name": "Iron Grille - Loose",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 258,
+        "y": 267,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Tightrope Room",
+    "sections": [
+      {
+        "name": "Game Over - Falling off the Tightrope",
+        "item_count": 1
+      },
+      {
+        "name": "Pole Across the Chasm",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 167,
+        "y": 250,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Troglodytes' Lair",
+    "sections": [
+      {
+        "name": "Game Over - Between Troglodytes and the River",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 258,
+        "y": 200,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Shop",
+    "sections": [
+      {
+        "name": "Shop in the Tunnel",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 370,
+        "y": 247,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Thomas and Ivy's Room",
+    "sections": [
+      {
+        "name": "Ivy's Cupboard",
+        "item_count": 1
+      },
+      {
+        "name": "Meeting Ivy",
+        "item_count": 1
+      },
+      {
+        "name": "Meeting Thomas",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 258,
+        "y": 128,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Ceiling Trap",
+    "sections": [
+      {
+        "name": "Game Over - Crushing Defeat",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 332,
+        "y": 70,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Guard Dogs' Room",
+    "sections": [
+      {
+        "name": "Slay Both Guard Dogs",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 183,
+        "y": 127,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Pit Fiend's Arena",
+    "sections": [
+      {
+        "name": "Trapdoor in the Sand",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 123,
+        "y": 126,
+        "size": 32
+      }
+    ]
+  },
+  {
+    "name": "Ninja's Room",
+    "sections": [
+      {
+        "name": "Meeting the Ninja",
+        "item_count": 1
+      },
+      {
+        "name": "Slay the Ninja",
+        "item_count": 1
+      },
+      {
+        "name": "Taking the Ninja's Weapons",
+        "item_count": 1
+      }
+    ],
+    "map_locations": [
+      {
+        "map": "main",
+        "x": 64,
+        "y": 127,
+        "size": 32
+      }
+    ]
+  }
+]
